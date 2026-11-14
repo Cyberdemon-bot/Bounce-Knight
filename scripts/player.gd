@@ -1,13 +1,13 @@
 extends CharacterBody2D
 
-const SPEED = 200.0
+const SPEED = 90.0
 const JUMP_VELOCITY = -350.0
 const AIR_ACCEL = 800.0
 
-const DASH_SPEED = 600.0
+const DASH_SPEED = 400.0
 const DASH_DURATION = 0.20
 const DASH_COOLDOWN = 1.0
-const DASH_BOUNCE_MULTIPLIER = 0.8
+const DASH_BOUNCE_MULTIPLIER = 1.2
 
 const PUSH_COOLDOWN = 1.5
 const PUSH_FORCE = DASH_SPEED * 0.75
@@ -18,6 +18,7 @@ const PUSH_FORCE = DASH_SPEED * 0.75
 @onready var health_bar: ProgressBar = $HUD/HealthBar
 @onready var dash_bar: ProgressBar = $HUD/SkillBar/DashBar
 @onready var push_bar: ProgressBar = $HUD/SkillBar/PushBar
+@onready var rune_label: Label = $HUD/RuneLabel
 @onready var jump_sound: AudioStreamPlayer2D = $JumpSound
 @onready var land_sound: AudioStreamPlayer2D = $LandSound
 @onready var hit_sound: AudioStreamPlayer2D = $HitSound

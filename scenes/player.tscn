@@ -180,6 +180,12 @@ theme_override_styles/background = SubResource("StyleBoxFlat_xmj7a")
 theme_override_styles/fill = SubResource("StyleBoxFlat_ytc45")
 show_percentage = false
 
+[node name="RuneLabel" type="Label" parent="HUD" unique_id=2010921346]
+offset_left = 1000.0
+offset_top = 20.0
+offset_right = 1040.0
+offset_bottom = 43.0
+
 [node name="JumpSound" type="AudioStreamPlayer2D" parent="." unique_id=1542134549]
 stream = ExtResource("4_fjrip")
 

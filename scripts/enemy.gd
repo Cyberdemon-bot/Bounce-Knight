@@ -9,6 +9,8 @@ const SEPARATION_FORCE = 450.0
 @export var attack_range: float = 350.0 
 @export var damage: int = 1 
 @export var bullet_scene: PackedScene
+@export var rune_scene: PackedScene
+@export var rune_drop_count: int = 3
 
 @onready var separation_area: Area2D = $SeparationArea
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
@@ -26,10 +28,12 @@ var default_muzzle_x: float
 
 func _ready() -> void:
 	hp = max_hp
-	attack_timer = attack_interval
-	default_muzzle_x = abs(muzzle.position.x)
 	health_bar.max_value = max_hp
 	health_bar.value = hp
+	health_bar.visible = false
+	
+	attack_timer = attack_interval
+	default_muzzle_x = abs(muzzle.position.x)
 	if anim_player.has_animation("idle"):
 		anim_player.play("idle")
 
@@ -137,6 +141,15 @@ func take_damage(amount: int) -> void:
 	get_tree().create_timer(0.1).timeout.connect(func(): if is_instance_valid(self): modulate = Color.WHITE)
 	
 	if hp <= 0:
+		spawn_runes()
 		hit_sound.reparent(get_tree().current_scene)
 		hit_sound.finished.connect(hit_sound.queue_free)
 		call_deferred("queue_free")
+
+func spawn_runes() -> void:
+	if rune_scene == null:
+		return
+	for i in rune_drop_count:
+		var rune := rune_scene.instantiate()
+		rune.global_position = global_position
+		get_tree().current_scene.call_deferred("add_child", rune)

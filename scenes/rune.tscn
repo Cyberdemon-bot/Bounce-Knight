@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://4o87m8njoxi7"]
+
+[ext_resource type="Texture2D" uid="uid://k5id8krgnjwo" path="res://assets/rune.png" id="1_024sg"]
+[ext_resource type="Script" uid="uid://g07flw66rg6j" path="res://scripts/rune.gd" id="1_ou4tv"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ghfay"]
+radius = 8.0
+
+[node name="Rune" type="Area2D" unique_id=1973323393]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_ou4tv")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=586211107]
+texture = ExtResource("1_024sg")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2093338505]
+shape = SubResource("CircleShape2D_ghfay")
