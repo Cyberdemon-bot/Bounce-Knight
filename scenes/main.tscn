@@ -25,6 +25,8 @@ texture = ExtResource("1_0xm2m")
 physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_1bvp3")
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ghfay"]
+
 [node name="Scene" type="Node2D" unique_id=1947273785]
 texture_filter = 1
 script = ExtResource("1_h2yge")
@@ -35,7 +37,7 @@ tile_map_data = PackedByteArray("AAAAAP//AAAAAAEAAAAAAP7/AAAAAAEAAAAAAP3/AAAAAAE
 tile_set = SubResource("TileSet_1vivr")
 
 [node name="Player" parent="." unique_id=1816567509 instance=ExtResource("2_0xm2m")]
-position = Vector2(37, -22)
+position = Vector2(168, -966)
 
 [node name="SpawnTimer" type="Timer" parent="." unique_id=900823372]
 autostart = true
@@ -87,5 +89,35 @@ position = Vector2(208, -713)
 
 [node name="p15" type="Marker2D" parent="SpawnPoints" unique_id=213664219]
 position = Vector2(302, -838)
+
+[node name="GoalArea" type="Area2D" parent="." unique_id=1324636140]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GoalArea" unique_id=1723343920]
+position = Vector2(405, -940)
+shape = SubResource("RectangleShape2D_ghfay")
+
+[node name="WinLayer" type="CanvasLayer" parent="." unique_id=1861597342]
+visible = false
+
+[node name="PanelContainer" type="PanelContainer" parent="WinLayer" unique_id=1912373311]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="WinLayer/PanelContainer" unique_id=1247602686]
+layout_mode = 2
+text = "VICTORY"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="WinLayer/PanelContainer" unique_id=852159479]
+layout_mode = 2
+
+[node name="RestartButton" type="Button" parent="WinLayer/PanelContainer/VBoxContainer" unique_id=95501018]
+layout_mode = 2
+text = "Play Again"
+
+[node name="MenuButton" type="Button" parent="WinLayer/PanelContainer/VBoxContainer" unique_id=621101500]
+layout_mode = 2
+text = "Main Menu"
 
 [connection signal="timeout" from="SpawnTimer" to="." method="_on_spawn_timer_timeout"]
