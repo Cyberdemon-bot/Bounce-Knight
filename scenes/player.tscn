@@ -1,24 +1,100 @@
 [gd_scene format=3 uid="uid://df157sx2skf58"]
 
-[ext_resource type="Texture2D" uid="uid://du0xata7282sp" path="res://icon.svg" id="1_3vyb7"]
 [ext_resource type="Script" uid="uid://bogl73c250wuu" path="res://scripts/player.gd" id="1_g2els"]
+[ext_resource type="Texture2D" uid="uid://c84rjrkdnfqug" path="res://assets/aya.png" id="2_g2els"]
+[ext_resource type="Texture2D" uid="uid://pd47kri10y4l" path="res://assets/shield.png" id="3_qhqgy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ghfay"]
 size = Vector2(32, 32)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_y3m2c"]
-size = Vector2(8, 30)
+size = Vector2(14, 30)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ghfay"]
 radius = 100.0
+
+[sub_resource type="Animation" id="Animation_qhqgy"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_dqkch"]
+resource_name = "idle"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_tuyoq"]
+resource_name = "jump"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [3]
+}
+
+[sub_resource type="Animation" id="Animation_qlg0r"]
+resource_name = "run"
+length = 0.3
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.099999994),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [1, 2]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_tuyoq"]
+_data = {
+&"RESET": SubResource("Animation_qhqgy"),
+&"idle": SubResource("Animation_dqkch"),
+&"jump": SubResource("Animation_tuyoq"),
+&"run": SubResource("Animation_qlg0r")
+}
 
 [node name="Player" type="CharacterBody2D" unique_id=1816567509]
 collision_layer = 2
 script = ExtResource("1_g2els")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=722449495]
-scale = Vector2(0.25, 0.25)
-texture = ExtResource("1_3vyb7")
+position = Vector2(0, -8)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("2_g2els")
+vframes = 5
+region_rect = Rect2(0, 0, 31.5, 36.25)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=889641082]
 shape = SubResource("RectangleShape2D_ghfay")
@@ -27,26 +103,25 @@ shape = SubResource("RectangleShape2D_ghfay")
 
 [node name="ShieldPivot" type="Node2D" parent="." unique_id=1492096219]
 
-[node name="ColorRect" type="ColorRect" parent="ShieldPivot" unique_id=2055390711]
-offset_left = 10.0
-offset_top = -15.0
-offset_right = 18.0
-offset_bottom = 15.0
-color = Color(0.4217312, 0.42173126, 0.42173123, 1)
-
 [node name="Area2D" type="Area2D" parent="ShieldPivot" unique_id=618932933]
-collision_layer = 8
-collision_mask = 4
+collision_layer = 0
+collision_mask = 12
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ShieldPivot/Area2D" unique_id=276403248]
-position = Vector2(14, 0)
+position = Vector2(20, 0)
 shape = SubResource("RectangleShape2D_y3m2c")
+
+[node name="Sprite2D" type="Sprite2D" parent="ShieldPivot" unique_id=1296803881]
+position = Vector2(20, 5)
+scale = Vector2(2, 2)
+texture = ExtResource("3_qhqgy")
 
 [node name="PushArea" type="Area2D" parent="." unique_id=1071685821]
 collision_layer = 0
-collision_mask = 4
+collision_mask = 12
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PushArea" unique_id=1552262741]
 shape = SubResource("CircleShape2D_ghfay")
 
-[connection signal="body_entered" from="ShieldPivot/Area2D" to="." method="_on_area_2d_body_entered"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=2031250827]
+libraries/ = SubResource("AnimationLibrary_tuyoq")

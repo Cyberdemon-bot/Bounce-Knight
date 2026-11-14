@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-const SPEED = 400.0
+const SPEED = 200.0
 const JUMP_VELOCITY = -350.0
 const AIR_ACCEL = 800.0
 
@@ -14,17 +14,71 @@ const PUSH_FORCE = DASH_SPEED * 0.75
 
 @onready var shield_area: Area2D = $ShieldPivot/Area2D
 @onready var push_area: Area2D = $PushArea
+@onready var anim_player: AnimationPlayer = $AnimationPlayer
 
 var is_bouncing: bool = false
 var dash_timer: float = 0.0
 var dash_cooldown_timer: float = 0.0
 var push_cooldown_timer: float = 0.0
 
+@export var max_hp: int = 5
+var hp: int
+var invuln_timer: float = 0.0 
+
+func _ready() -> void:
+	hp = max_hp
+	shield_area.area_entered.connect(_on_shield_area_entered)
+
+func _on_shield_area_entered(area: Area2D) -> void:
+	if area.is_in_group("enemy_bullets"):
+		if area.has_method("reflect"):
+			var reflect_dir := global_position.direction_to(get_global_mouse_position())
+			area.reflect(reflect_dir)
+
+func take_damage(amount: int, hit_from: Vector2 = Vector2.ZERO) -> void:
+	if invuln_timer > 0.0:
+		return
+		
+	hp -= amount
+	invuln_timer = 0.8 
+	
+	modulate = Color(1.0, 0.3, 0.3)
+	get_tree().create_timer(0.15).timeout.connect(func(): if is_instance_valid(self): modulate = Color.WHITE)
+	
+	if hit_from != Vector2.ZERO:
+		var knockback_dir := hit_from.direction_to(global_position)
+		velocity = (knockback_dir + Vector2(0, -0.3)).normalized() * 250.0
+		is_bouncing = true
+		
+	if hp <= 0:
+		get_tree().call_deferred("reload_current_scene")
+
+
+func update_animation() -> void:
+	if not is_on_floor():
+		if anim_player.current_animation != "jump":
+			anim_player.play("jump")
+	elif abs(velocity.x) > 10.0:
+		if anim_player.current_animation != "run":
+			anim_player.play("run")
+	else:
+		if anim_player.current_animation != "idle":
+			anim_player.play("idle")
+
+
 func _process(_delta: float) -> void:
-	$ShieldPivot.look_at(get_global_mouse_position())
+	var mouse_pos := get_global_mouse_position()
+	$ShieldPivot.look_at(mouse_pos)
+	$ShieldPivot/Sprite2D.flip_v = mouse_pos.x < global_position.x
 
 func update_movement(delta: float) -> void:
 	var move_direction := Input.get_axis("move_left", "move_right")
+	
+	if move_direction < 0.0:
+		$Sprite2D.flip_h = true
+	elif move_direction > 0.0:
+		$Sprite2D.flip_h = false
+		
 	if is_on_floor():
 		if is_bouncing:
 			velocity.x = move_toward(velocity.x, 0, AIR_ACCEL * delta)
@@ -40,6 +94,8 @@ func update_movement(delta: float) -> void:
 
 func dash() -> void:
 	var dash_dir := global_position.direction_to(get_global_mouse_position())
+	if dash_dir.x != 0.0:
+		$Sprite2D.flip_h = dash_dir.x < 0.0
 	velocity = dash_dir * DASH_SPEED
 	dash_timer = DASH_DURATION
 	dash_cooldown_timer = DASH_COOLDOWN
@@ -68,7 +124,9 @@ func _physics_process(delta: float) -> void:
 		dash_cooldown_timer -= delta
 	if push_cooldown_timer > 0.0:
 		push_cooldown_timer -= delta
-
+		
+	if invuln_timer > 0.0: invuln_timer -= delta
+	
 	if dash_timer > 0.0:
 		dash_timer -= delta
 		var prev_velocity := velocity
@@ -112,3 +170,4 @@ func _physics_process(delta: float) -> void:
 			
 	update_movement(delta)
 	move_and_slide()
+	update_animation()

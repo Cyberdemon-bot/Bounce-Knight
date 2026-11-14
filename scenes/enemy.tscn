@@ -1,7 +1,8 @@
 [gd_scene format=3 uid="uid://b5yr6tmle3hob"]
 
-[ext_resource type="Texture2D" uid="uid://du0xata7282sp" path="res://icon.svg" id="1_7p1mj"]
 [ext_resource type="Script" uid="uid://kb0ilo7x2ed0" path="res://scripts/enemy.gd" id="1_md0e3"]
+[ext_resource type="PackedScene" uid="uid://dcecmq0avvesc" path="res://scenes/bullet.tscn" id="2_4ra3w"]
+[ext_resource type="Texture2D" uid="uid://cd1pybew0g17i" path="res://assets/demon.png" id="2_md0e3"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ghfay"]
 size = Vector2(32, 32)
@@ -9,13 +10,69 @@ size = Vector2(32, 32)
 [sub_resource type="CircleShape2D" id="CircleShape2D_md0e3"]
 radius = 22.0
 
+[sub_resource type="Animation" id="Animation_4ra3w"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_5uy6h"]
+resource_name = "attack"
+length = 0.19999999999999998
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [0, 1, 2]
+}
+
+[sub_resource type="Animation" id="Animation_c4w8v"]
+resource_name = "idle"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_xwavj"]
+_data = {
+&"RESET": SubResource("Animation_4ra3w"),
+&"attack": SubResource("Animation_5uy6h"),
+&"idle": SubResource("Animation_c4w8v")
+}
+
 [node name="Enemy" type="CharacterBody2D" unique_id=1128199409]
 collision_layer = 4
 script = ExtResource("1_md0e3")
+bullet_scene = ExtResource("2_4ra3w")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=322356950]
-scale = Vector2(0.25, 0.25)
-texture = ExtResource("1_7p1mj")
+scale = Vector2(2, 2)
+texture = ExtResource("2_md0e3")
+vframes = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1052956228]
 shape = SubResource("RectangleShape2D_ghfay")
@@ -26,3 +83,9 @@ collision_mask = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SeparationArea" unique_id=1652721143]
 shape = SubResource("CircleShape2D_md0e3")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1643617725]
+libraries/ = SubResource("AnimationLibrary_xwavj")
+
+[node name="Muzzle" type="Marker2D" parent="." unique_id=456162478]
+position = Vector2(-9, 0)
