@@ -14,6 +14,7 @@ const SEPARATION_FORCE = 450.0
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var muzzle: Marker2D = $Muzzle
+@onready var health_bar: ProgressBar = $HealthBar
 
 var hp: int
 var hit_cooldown: float = 0.0
@@ -25,6 +26,8 @@ func _ready() -> void:
 	hp = max_hp
 	attack_timer = attack_interval
 	default_muzzle_x = abs(muzzle.position.x)
+	health_bar.max_value = max_hp
+	health_bar.value = hp
 	if anim_player.has_animation("idle"):
 		anim_player.play("idle")
 
@@ -120,6 +123,7 @@ func on_hit_by_dash(impulse: Vector2, incoming_damage: int = 1) -> void:
 func take_damage(amount: int) -> void:
 	hp -= amount
 	modulate = Color(1.0, 0.3, 0.3)
+	health_bar.value = hp
 	get_tree().create_timer(0.1).timeout.connect(func(): if is_instance_valid(self): modulate = Color.WHITE)
 	
 	if hp <= 0:

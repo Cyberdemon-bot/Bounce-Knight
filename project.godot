@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="BounceKnight"
-run/main_scene="uid://b2oqga0pdkng1"
+run/main_scene="uid://dts7my5v3wk0o"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 

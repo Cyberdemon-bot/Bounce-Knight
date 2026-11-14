@@ -15,6 +15,7 @@ const PUSH_FORCE = DASH_SPEED * 0.75
 @onready var shield_area: Area2D = $ShieldPivot/Area2D
 @onready var push_area: Area2D = $PushArea
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
+@onready var health_bar: ProgressBar = $HUD/HealthBar
 
 var is_bouncing: bool = false
 var dash_timer: float = 0.0
@@ -27,6 +28,8 @@ var invuln_timer: float = 0.0
 
 func _ready() -> void:
 	hp = max_hp
+	health_bar.max_value = max_hp
+	health_bar.value = hp
 	shield_area.area_entered.connect(_on_shield_area_entered)
 
 func _on_shield_area_entered(area: Area2D) -> void:
@@ -40,6 +43,7 @@ func take_damage(amount: int, hit_from: Vector2 = Vector2.ZERO) -> void:
 		return
 		
 	hp -= amount
+	health_bar.value = hp
 	invuln_timer = 0.8 
 	
 	modulate = Color(1.0, 0.3, 0.3)

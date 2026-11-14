@@ -64,6 +64,11 @@ _data = {
 &"idle": SubResource("Animation_c4w8v")
 }
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ghfay"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y3m2c"]
+bg_color = Color(1, 0, 0, 1)
+
 [node name="Enemy" type="CharacterBody2D" unique_id=1128199409]
 collision_layer = 4
 script = ExtResource("1_md0e3")
@@ -89,3 +94,15 @@ libraries/ = SubResource("AnimationLibrary_xwavj")
 
 [node name="Muzzle" type="Marker2D" parent="." unique_id=456162478]
 position = Vector2(-9, 0)
+
+[node name="HealthBar" type="ProgressBar" parent="." unique_id=2121602326]
+offset_left = -10.0
+offset_top = -20.0
+offset_right = 10.0
+offset_bottom = -16.0
+theme_override_styles/background = SubResource("StyleBoxFlat_ghfay")
+theme_override_styles/fill = SubResource("StyleBoxFlat_y3m2c")
+max_value = 3.0
+step = 1.0
+value = 3.0
+show_percentage = false

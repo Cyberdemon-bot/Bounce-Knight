@@ -1,0 +1,104 @@
+[gd_scene format=3 uid="uid://dts7my5v3wk0o"]
+
+[ext_resource type="Script" uid="uid://bcitj66kmm4s7" path="res://scripts/start_screen.gd" id="1_bvda4"]
+[ext_resource type="FontFile" uid="uid://b51fxejl3mefp" path="res://assets/assets_ui_font_pixel.ttf" id="1_h0ljh"]
+[ext_resource type="Texture2D" uid="uid://bwdga2wiyck51" path="res://assets/assets_ui_bg_titlescreen.png" id="2_jl31a"]
+
+[sub_resource type="Theme" id="Theme_nejm3"]
+default_font = ExtResource("1_h0ljh")
+
+[sub_resource type="FontVariation" id="FontVariation_n6b5g"]
+base_font = ExtResource("1_h0ljh")
+spacing_glyph = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h0ljh"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 4
+border_color = Color(0.10980392, 0.1254902, 0.2, 1)
+
+[node name="StartScreenClassic" type="Control" unique_id=991237522]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_nejm3")
+script = ExtResource("1_bvda4")
+main_game_scene = "uid://b2oqga0pdkng1"
+metadata/_edit_use_anchors_ = true
+
+[node name="Background" type="TextureRect" parent="." unique_id=2064351016]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_jl31a")
+expand_mode = 1
+stretch_mode = 6
+metadata/_edit_use_anchors_ = true
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1320161693]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 36
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1047534423]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+theme_override_constants/separation = 28
+
+[node name="GameTitle" type="Label" parent="MarginContainer/VBoxContainer" unique_id=838654962]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.10980392, 0.1254902, 0.2, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/outline_size = 1
+theme_override_constants/shadow_outline_size = 4
+theme_override_fonts/font = SubResource("FontVariation_n6b5g")
+theme_override_font_sizes/font_size = 22
+text = "BOUNCE KNIGHT
+"
+
+[node name="ButtonList" type="VBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=755015309]
+custom_minimum_size = Vector2(130, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 12
+
+[node name="PlayButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonList" unique_id=1881226440]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
+theme_override_colors/font_focus_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
+theme_override_colors/font_hover_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_h0ljh")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_h0ljh")
+theme_override_styles/hover = SubResource("StyleBoxFlat_h0ljh")
+theme_override_styles/focus = SubResource("StyleBoxFlat_h0ljh")
+text = "PLAY
+"
+
+[node name="QuitButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonList" unique_id=906159215]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
+theme_override_colors/font_focus_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
+theme_override_colors/font_hover_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_h0ljh")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_h0ljh")
+theme_override_styles/hover = SubResource("StyleBoxFlat_h0ljh")
+theme_override_styles/focus = SubResource("StyleBoxFlat_h0ljh")
+text = "QUIT
+"
