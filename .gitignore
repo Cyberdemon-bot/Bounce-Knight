@@ -1,3 +1,28 @@
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
 # Godot 4+ specific ignores
 .godot/
-/android/
+
+# Godot-specific ignores
+*.translation
+
+# Imported textures and samples into .import/ (Godot 3)
+.import/
+
+# Mono / C# builds (nếu có)
+.mono/
+data_*/
+mono_crash.*.json
+
+# Export builds
+builds/
+*.dmg
+*.app
+*.exe
+*.zip
