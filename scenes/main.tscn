@@ -1,6 +1,6 @@
 [gd_scene format=4 uid="uid://b2oqga0pdkng1"]
 
-[ext_resource type="Texture2D" uid="uid://cx2rj2okcbid8" path="res://assets/tileset.png" id="1_0xm2m"]
+[ext_resource type="Texture2D" uid="uid://dowlau8051hcx" path="res://assets/tileset.png" id="1_0xm2m"]
 [ext_resource type="Script" uid="uid://cr0tf8ukxjkhq" path="res://scripts/main.gd" id="1_h2yge"]
 [ext_resource type="PackedScene" uid="uid://df157sx2skf58" path="res://scenes/player.tscn" id="2_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://b5yr6tmle3hob" path="res://scenes/enemy.tscn" id="2_1bvp3"]
@@ -35,7 +35,7 @@ tile_map_data = PackedByteArray("AAAAAP//AAAAAAEAAAAAAP7/AAAAAAEAAAAAAP3/AAAAAAE
 tile_set = SubResource("TileSet_1vivr")
 
 [node name="Player" parent="." unique_id=1816567509 instance=ExtResource("2_0xm2m")]
-position = Vector2(435, -485)
+position = Vector2(37, -22)
 
 [node name="SpawnTimer" type="Timer" parent="." unique_id=900823372]
 autostart = true
