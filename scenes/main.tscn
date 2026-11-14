@@ -37,7 +37,7 @@ tile_map_data = PackedByteArray("AAAAAP//AAAAAAEAAAAAAP7/AAAAAAEAAAAAAP3/AAAAAAE
 tile_set = SubResource("TileSet_1vivr")
 
 [node name="Player" parent="." unique_id=1816567509 instance=ExtResource("2_0xm2m")]
-position = Vector2(168, -966)
+position = Vector2(37, -26)
 
 [node name="SpawnTimer" type="Timer" parent="." unique_id=900823372]
 autostart = true
