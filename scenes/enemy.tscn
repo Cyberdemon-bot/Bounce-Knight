@@ -3,9 +3,11 @@
 [ext_resource type="Script" uid="uid://kb0ilo7x2ed0" path="res://scripts/enemy.gd" id="1_md0e3"]
 [ext_resource type="PackedScene" uid="uid://dcecmq0avvesc" path="res://scenes/bullet.tscn" id="2_4ra3w"]
 [ext_resource type="Texture2D" uid="uid://cd1pybew0g17i" path="res://assets/demon.png" id="2_md0e3"]
+[ext_resource type="AudioStream" uid="uid://dcspnjsvvq8wt" path="res://assets/sfx_hit_spikes.wav" id="4_c4w8v"]
+[ext_resource type="AudioStream" uid="uid://b6tiw73qpw6fi" path="res://assets/sfx_shoot.wav" id="5_xwavj"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ghfay"]
-size = Vector2(32, 32)
+size = Vector2(11, 16)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_md0e3"]
 radius = 22.0
@@ -27,7 +29,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_5uy6h"]
 resource_name = "attack"
-length = 0.19999999999999998
+length = 0.2
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -64,9 +66,9 @@ _data = {
 &"idle": SubResource("Animation_c4w8v")
 }
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ghfay"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4ra3w"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y3m2c"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5uy6h"]
 bg_color = Color(1, 0, 0, 1)
 
 [node name="Enemy" type="CharacterBody2D" unique_id=1128199409]
@@ -75,11 +77,11 @@ script = ExtResource("1_md0e3")
 bullet_scene = ExtResource("2_4ra3w")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=322356950]
-scale = Vector2(2, 2)
 texture = ExtResource("2_md0e3")
 vframes = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1052956228]
+position = Vector2(0.5, 0)
 shape = SubResource("RectangleShape2D_ghfay")
 
 [node name="SeparationArea" type="Area2D" parent="." unique_id=207666735]
@@ -95,14 +97,20 @@ libraries/ = SubResource("AnimationLibrary_xwavj")
 [node name="Muzzle" type="Marker2D" parent="." unique_id=456162478]
 position = Vector2(-9, 0)
 
-[node name="HealthBar" type="ProgressBar" parent="." unique_id=2121602326]
+[node name="HealthBar" type="ProgressBar" parent="." unique_id=1850034313]
 offset_left = -10.0
-offset_top = -20.0
+offset_top = -14.0
 offset_right = 10.0
-offset_bottom = -16.0
-theme_override_styles/background = SubResource("StyleBoxFlat_ghfay")
-theme_override_styles/fill = SubResource("StyleBoxFlat_y3m2c")
+offset_bottom = -10.0
+theme_override_styles/background = SubResource("StyleBoxFlat_4ra3w")
+theme_override_styles/fill = SubResource("StyleBoxFlat_5uy6h")
 max_value = 3.0
 step = 1.0
 value = 3.0
 show_percentage = false
+
+[node name="HitSound" type="AudioStreamPlayer2D" parent="." unique_id=1012484249]
+stream = ExtResource("4_c4w8v")
+
+[node name="ShootSound" type="AudioStreamPlayer2D" parent="." unique_id=872718782]
+stream = ExtResource("5_xwavj")

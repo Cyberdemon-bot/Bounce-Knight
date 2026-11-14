@@ -15,6 +15,8 @@ const SEPARATION_FORCE = 450.0
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var muzzle: Marker2D = $Muzzle
 @onready var health_bar: ProgressBar = $HealthBar
+@onready var shoot_sound: AudioStreamPlayer2D = $ShootSound
+@onready var hit_sound: AudioStreamPlayer2D = $HitSound
 
 var hp: int
 var hit_cooldown: float = 0.0
@@ -95,6 +97,9 @@ func shoot_at_player() -> void:
 		
 	face_player(player)
 	
+	shoot_sound.pitch_scale = randf_range(0.95, 1.05)
+	shoot_sound.play()
+	
 	var bullet := bullet_scene.instantiate()
 	bullet.global_position = muzzle.global_position
 	bullet.direction = muzzle.global_position.direction_to(player.global_position)
@@ -122,9 +127,16 @@ func on_hit_by_dash(impulse: Vector2, incoming_damage: int = 1) -> void:
 
 func take_damage(amount: int) -> void:
 	hp -= amount
-	modulate = Color(1.0, 0.3, 0.3)
+	health_bar.visible = true
 	health_bar.value = hp
+	
+	hit_sound.pitch_scale = randf_range(0.9, 1.1)
+	hit_sound.play()
+	
+	modulate = Color(1.0, 0.3, 0.3)
 	get_tree().create_timer(0.1).timeout.connect(func(): if is_instance_valid(self): modulate = Color.WHITE)
 	
 	if hp <= 0:
+		hit_sound.reparent(get_tree().current_scene)
+		hit_sound.finished.connect(hit_sound.queue_free)
 		call_deferred("queue_free")

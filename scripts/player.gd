@@ -16,6 +16,14 @@ const PUSH_FORCE = DASH_SPEED * 0.75
 @onready var push_area: Area2D = $PushArea
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
 @onready var health_bar: ProgressBar = $HUD/HealthBar
+@onready var dash_bar: ProgressBar = $HUD/SkillBar/DashBar
+@onready var push_bar: ProgressBar = $HUD/SkillBar/PushBar
+@onready var jump_sound: AudioStreamPlayer2D = $JumpSound
+@onready var land_sound: AudioStreamPlayer2D = $LandSound
+@onready var hit_sound: AudioStreamPlayer2D = $HitSound
+@onready var parry_sound: AudioStreamPlayer2D = $ParrySound
+
+var was_on_floor: bool = false
 
 var is_bouncing: bool = false
 var dash_timer: float = 0.0
@@ -30,19 +38,40 @@ func _ready() -> void:
 	hp = max_hp
 	health_bar.max_value = max_hp
 	health_bar.value = hp
+	dash_bar.max_value = DASH_COOLDOWN
+	dash_bar.value = DASH_COOLDOWN
+	push_bar.max_value = PUSH_COOLDOWN
+	push_bar.value = PUSH_COOLDOWN
 	shield_area.area_entered.connect(_on_shield_area_entered)
+	
+func update_skill_ui() -> void:
+	if dash_cooldown_timer > 0.0:
+		dash_bar.value = DASH_COOLDOWN - dash_cooldown_timer
+		dash_bar.modulate = Color(0.6, 0.6, 0.6) 
+	else:
+		dash_bar.value = DASH_COOLDOWN
+		dash_bar.modulate = Color.WHITE 
+
+	if push_cooldown_timer > 0.0:
+		push_bar.value = PUSH_COOLDOWN - push_cooldown_timer
+		push_bar.modulate = Color(0.6, 0.6, 0.6)
+	else:
+		push_bar.value = PUSH_COOLDOWN
+		push_bar.modulate = Color.WHITE
 
 func _on_shield_area_entered(area: Area2D) -> void:
 	if area.is_in_group("enemy_bullets"):
 		if area.has_method("reflect"):
+			parry_sound.pitch_scale = randf_range(0.95, 1.05)
+			parry_sound.play()
 			var reflect_dir := global_position.direction_to(get_global_mouse_position())
 			area.reflect(reflect_dir)
 
 func take_damage(amount: int, hit_from: Vector2 = Vector2.ZERO) -> void:
 	if invuln_timer > 0.0:
 		return
-		
-	hp -= amount
+	hit_sound.play()
+	hp = max(hp - amount, 0)
 	health_bar.value = hp
 	invuln_timer = 0.8 
 	
@@ -112,7 +141,6 @@ func push_nearby_enemies() -> void:
 			var push_dir := global_position.direction_to(body.global_position)
 			if push_dir == Vector2.ZERO:
 				push_dir = Vector2.UP
-			# Nhích nhẹ góc hất lên trên (y - 0.3) để quái nhấc khỏi mặt đất và văng mượt hơn
 			push_dir = (push_dir + Vector2(0, -0.3)).normalized()
 			body.on_hit_by_dash(push_dir * PUSH_FORCE)
 
@@ -171,7 +199,16 @@ func _physics_process(delta: float) -> void:
 			
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
+		jump_sound.pitch_scale = randf_range(0.95, 1.05)
+		jump_sound.play()
 			
 	update_movement(delta)
 	move_and_slide()
+	
+	if is_on_floor() and not was_on_floor:
+		land_sound.pitch_scale = randf_range(0.9, 1.1)
+		land_sound.play()
+	was_on_floor = is_on_floor()
+	
 	update_animation()
+	update_skill_ui()

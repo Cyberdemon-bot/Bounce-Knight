@@ -68,8 +68,7 @@ theme_override_constants/outline_size = 1
 theme_override_constants/shadow_outline_size = 4
 theme_override_fonts/font = SubResource("FontVariation_n6b5g")
 theme_override_font_sizes/font_size = 22
-text = "BOUNCE KNIGHT
-"
+text = "BOUNCE KNIGHT"
 
 [node name="ButtonList" type="VBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=755015309]
 custom_minimum_size = Vector2(130, 0)
