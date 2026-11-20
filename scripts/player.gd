@@ -5,7 +5,7 @@ const GROUND_ACCEL = 900.0
 const GROUND_FRICTION = 1200.0
 const AIR_ACCEL = 800.0
 const AIR_FRICTION = 400.0
-const JUMP_VELOCITY = -300.0
+const JUMP_VELOCITY = -270.0
 
 const FALL_GRAVITY_MULT = 1.5 # rớt nhanh
 
