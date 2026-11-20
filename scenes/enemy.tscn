@@ -2,10 +2,10 @@
 
 [ext_resource type="Script" uid="uid://kb0ilo7x2ed0" path="res://scripts/enemy.gd" id="1_md0e3"]
 [ext_resource type="PackedScene" uid="uid://dcecmq0avvesc" path="res://scenes/bullet.tscn" id="2_4ra3w"]
-[ext_resource type="Texture2D" uid="uid://cd1pybew0g17i" path="res://assets/demon.png" id="2_md0e3"]
+[ext_resource type="Texture2D" uid="uid://cd1pybew0g17i" path="res://assets/sprites/demon.png" id="2_md0e3"]
 [ext_resource type="PackedScene" uid="uid://4o87m8njoxi7" path="res://scenes/rune.tscn" id="3_xwavj"]
-[ext_resource type="AudioStream" uid="uid://dcspnjsvvq8wt" path="res://assets/sfx_hit_spikes.wav" id="4_c4w8v"]
-[ext_resource type="AudioStream" uid="uid://b6tiw73qpw6fi" path="res://assets/sfx_shoot.wav" id="5_xwavj"]
+[ext_resource type="AudioStream" uid="uid://dcspnjsvvq8wt" path="res://assets/sfx/sfx_hit_spikes.wav" id="4_c4w8v"]
+[ext_resource type="AudioStream" uid="uid://b6tiw73qpw6fi" path="res://assets/sfx/sfx_shoot.wav" id="5_xwavj"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ghfay"]
 size = Vector2(11, 16)

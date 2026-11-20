@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://k5id8krgnjwo"
-path="res://.godot/imported/rune.png-6a91260895c6df2abe3db3ab408b9a3f.ctex"
+uid="uid://dr2paws5v25tm"
+path="res://.godot/imported/projectile.png-945717e1264ab30e73b18b45485cf8cf.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/rune.png"
-dest_files=["res://.godot/imported/rune.png-6a91260895c6df2abe3db3ab408b9a3f.ctex"]
+source_file="res://assets/sprites/projectiles/projectile.png"
+dest_files=["res://.godot/imported/projectile.png-945717e1264ab30e73b18b45485cf8cf.ctex"]
 
 [params]
 

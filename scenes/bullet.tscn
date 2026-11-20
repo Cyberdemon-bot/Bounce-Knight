@@ -1,10 +1,21 @@
 [gd_scene format=3 uid="uid://dcecmq0avvesc"]
 
 [ext_resource type="Script" uid="uid://kguvgq6skb83" path="res://scripts/bullet.gd" id="1_y25gk"]
-[ext_resource type="Texture2D" uid="uid://dr2paws5v25tm" path="res://assets/projectile.png" id="2_l5glv"]
+[ext_resource type="Texture2D" uid="uid://dr2paws5v25tm" path="res://assets/sprites/projectiles/projectile.png" id="2_l5glv"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ghfay"]
 radius = 4.0
+
+[sub_resource type="Gradient" id="Gradient_y25gk"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0, 0.72289157)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_eoqba"]
+gradient = SubResource("Gradient_y25gk")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0, 0)
 
 [node name="Bullet" type="Area2D" unique_id=2137417508]
 collision_layer = 8
@@ -18,3 +29,9 @@ texture = ExtResource("2_l5glv")
 shape = SubResource("CircleShape2D_ghfay")
 
 [node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." unique_id=1369329502]
+
+[node name="PointLight2D" type="PointLight2D" parent="." unique_id=499622590]
+color = Color(0.42352942, 1, 0, 1)
+energy = 0.2
+texture = SubResource("GradientTexture2D_eoqba")
+texture_scale = 2.0

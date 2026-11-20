@@ -1,15 +1,41 @@
 [gd_scene format=3 uid="uid://df157sx2skf58"]
 
 [ext_resource type="Script" uid="uid://bogl73c250wuu" path="res://scripts/player.gd" id="1_g2els"]
-[ext_resource type="Texture2D" uid="uid://c84rjrkdnfqug" path="res://assets/aya.png" id="2_g2els"]
-[ext_resource type="Texture2D" uid="uid://pd47kri10y4l" path="res://assets/shield.png" id="3_qhqgy"]
-[ext_resource type="AudioStream" uid="uid://dj7qgioqdw6wd" path="res://assets/sfx_jump.wav" id="4_fjrip"]
-[ext_resource type="AudioStream" uid="uid://b5wqluc2duxal" path="res://assets/sfx_land.wav" id="5_smehm"]
-[ext_resource type="AudioStream" uid="uid://dcspnjsvvq8wt" path="res://assets/sfx_hit_spikes.wav" id="6_ur7pv"]
-[ext_resource type="AudioStream" uid="uid://drw8enxm7c8g" path="res://assets/sfx_shield_block.wav" id="7_y4r1p"]
+[ext_resource type="Texture2D" uid="uid://c84rjrkdnfqug" path="res://assets/sprites/aya.png" id="2_g2els"]
+[ext_resource type="Texture2D" uid="uid://pd47kri10y4l" path="res://assets/sprites/shield.png" id="3_qhqgy"]
+[ext_resource type="AudioStream" uid="uid://dj7qgioqdw6wd" path="res://assets/sfx/sfx_jump.wav" id="4_fjrip"]
+[ext_resource type="AudioStream" uid="uid://b5wqluc2duxal" path="res://assets/sfx/sfx_land.wav" id="5_smehm"]
+[ext_resource type="AudioStream" uid="uid://dcspnjsvvq8wt" path="res://assets/sfx/sfx_hit_spikes.wav" id="6_ur7pv"]
+[ext_resource type="AudioStream" uid="uid://drw8enxm7c8g" path="res://assets/sfx/sfx_shield_block.wav" id="7_y4r1p"]
+[ext_resource type="Texture2D" uid="uid://n2xin1usf0ao" path="res://assets/lights/light.png" id="8_smehm"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ghfay"]
 size = Vector2(12, 23)
+
+[sub_resource type="Curve" id="Curve_fjrip"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -1.8876406, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_tefeu"]
+curve = SubResource("Curve_fjrip")
+
+[sub_resource type="Gradient" id="Gradient_smehm"]
+offsets = PackedFloat32Array(0.4262295, 0.58196723)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_tbgi4"]
+gradient = SubResource("Gradient_smehm")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ur7pv"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(200, 1, 1)
+gravity = Vector3(45, 98, 0)
+scale_max = 4.0
+color_initial_ramp = SubResource("GradientTexture1D_tbgi4")
+alpha_curve = SubResource("CurveTexture_tefeu")
+turbulence_enabled = true
+turbulence_noise_scale = 0.04
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_y3m2c"]
 size = Vector2(11, 20)
@@ -118,7 +144,15 @@ position = Vector2(0, 4.5)
 shape = SubResource("RectangleShape2D_ghfay")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1432412782]
-zoom = Vector2(1.5, 1.5)
+zoom = Vector2(1.25, 1.25)
+
+[node name="Snow" type="GPUParticles2D" parent="Camera2D" unique_id=1103408815]
+position = Vector2(6.4623485e-27, -373)
+scale = Vector2(4.2958384, -7.945598)
+amount = 1000
+lifetime = 50.0
+preprocess = 30.0
+process_material = SubResource("ParticleProcessMaterial_ur7pv")
 
 [node name="ShieldPivot" type="Node2D" parent="." unique_id=1492096219]
 position = Vector2(0, 2)
@@ -197,3 +231,15 @@ stream = ExtResource("6_ur7pv")
 
 [node name="ParrySound" type="AudioStreamPlayer2D" parent="." unique_id=1977840636]
 stream = ExtResource("7_y4r1p")
+
+[node name="BodyPoint" type="Marker2D" parent="." unique_id=1092870533]
+position = Vector2(0, 5)
+
+[node name="PointLight2D" type="PointLight2D" parent="BodyPoint" unique_id=76483399]
+position = Vector2(0, -2)
+energy = 0.15
+texture = ExtResource("8_smehm")
+texture_scale = 0.4
+
+[node name="FootPoint" type="Marker2D" parent="." unique_id=885168814]
+position = Vector2(0, 16)

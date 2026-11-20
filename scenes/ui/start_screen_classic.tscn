@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://dts7my5v3wk0o"]
 
-[ext_resource type="Script" uid="uid://bcitj66kmm4s7" path="res://scripts/start_screen.gd" id="1_bvda4"]
+[ext_resource type="Script" uid="uid://bcitj66kmm4s7" path="res://scripts/ui/start_screen.gd" id="1_bvda4"]
 [ext_resource type="FontFile" uid="uid://b51fxejl3mefp" path="res://assets/assets_ui_font_pixel.ttf" id="1_h0ljh"]
-[ext_resource type="Texture2D" uid="uid://bwdga2wiyck51" path="res://assets/assets_ui_bg_titlescreen.png" id="2_jl31a"]
+[ext_resource type="Texture2D" uid="uid://bwdga2wiyck51" path="res://assets/background/assets_ui_bg_titlescreen.png" id="2_jl31a"]
 
 [sub_resource type="Theme" id="Theme_nejm3"]
 default_font = ExtResource("1_h0ljh")

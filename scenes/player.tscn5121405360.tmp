@@ -1,0 +1,236 @@
+[gd_scene format=3 uid="uid://df157sx2skf58"]
+
+[ext_resource type="Script" uid="uid://bogl73c250wuu" path="res://scripts/player.gd" id="1_g2els"]
+[ext_resource type="Texture2D" uid="uid://c84rjrkdnfqug" path="res://assets/sprites/aya.png" id="2_g2els"]
+[ext_resource type="Texture2D" uid="uid://pd47kri10y4l" path="res://assets/sprites/shield.png" id="3_qhqgy"]
+[ext_resource type="AudioStream" uid="uid://dj7qgioqdw6wd" path="res://assets/sfx/sfx_jump.wav" id="4_fjrip"]
+[ext_resource type="AudioStream" uid="uid://b5wqluc2duxal" path="res://assets/sfx/sfx_land.wav" id="5_smehm"]
+[ext_resource type="AudioStream" uid="uid://dcspnjsvvq8wt" path="res://assets/sfx/sfx_hit_spikes.wav" id="6_ur7pv"]
+[ext_resource type="AudioStream" uid="uid://drw8enxm7c8g" path="res://assets/sfx/sfx_shield_block.wav" id="7_y4r1p"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ghfay"]
+size = Vector2(12, 23)
+
+[sub_resource type="Curve" id="Curve_fjrip"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -1.8876406, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_tefeu"]
+curve = SubResource("Curve_fjrip")
+
+[sub_resource type="Gradient" id="Gradient_smehm"]
+offsets = PackedFloat32Array(0.4262295, 0.58196723)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_tbgi4"]
+gradient = SubResource("Gradient_smehm")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ur7pv"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(200, 1, 1)
+gravity = Vector3(45, 98, 0)
+scale_max = 4.0
+color_initial_ramp = SubResource("GradientTexture1D_tbgi4")
+alpha_curve = SubResource("CurveTexture_tefeu")
+turbulence_enabled = true
+turbulence_noise_scale = 0.04
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_y3m2c"]
+size = Vector2(11, 20)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ghfay"]
+radius = 100.0
+
+[sub_resource type="Animation" id="Animation_qhqgy"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_dqkch"]
+resource_name = "idle"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_tuyoq"]
+resource_name = "jump"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [3]
+}
+
+[sub_resource type="Animation" id="Animation_qlg0r"]
+resource_name = "run"
+length = 0.3
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.099999994),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [1, 2]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_tuyoq"]
+_data = {
+&"RESET": SubResource("Animation_qhqgy"),
+&"idle": SubResource("Animation_dqkch"),
+&"jump": SubResource("Animation_tuyoq"),
+&"run": SubResource("Animation_qlg0r")
+}
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ghfay"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y3m2c"]
+bg_color = Color(1, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0gxiq"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g5nlp"]
+bg_color = Color(0.6784314, 0.84705883, 0.9019608, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xmj7a"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ytc45"]
+bg_color = Color(0.6784314, 0.84705883, 0.9019608, 1)
+
+[node name="Player" type="CharacterBody2D" unique_id=1816567509]
+collision_layer = 2
+script = ExtResource("1_g2els")
+max_hp = null
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=722449495]
+texture = ExtResource("2_g2els")
+vframes = 5
+region_rect = Rect2(0, 0, 31.5, 36.25)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=889641082]
+position = Vector2(0, 4.5)
+shape = SubResource("RectangleShape2D_ghfay")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1432412782]
+zoom = Vector2(1.25, 1.25)
+
+[node name="Snow" type="GPUParticles2D" parent="Camera2D" unique_id=1103408815]
+position = Vector2(6.4623485e-27, -373)
+scale = Vector2(4.2958384, -7.945598)
+amount = 1000
+lifetime = 50.0
+preprocess = 30.0
+process_material = SubResource("ParticleProcessMaterial_ur7pv")
+
+[node name="ShieldPivot" type="Node2D" parent="." unique_id=1492096219]
+position = Vector2(0, 2)
+
+[node name="Area2D" type="Area2D" parent="ShieldPivot" unique_id=618932933]
+collision_layer = 0
+collision_mask = 12
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ShieldPivot/Area2D" unique_id=276403248]
+position = Vector2(10.5, 1)
+shape = SubResource("RectangleShape2D_y3m2c")
+
+[node name="Sprite2D" type="Sprite2D" parent="ShieldPivot" unique_id=1296803881]
+position = Vector2(11.5, 1.5)
+texture = ExtResource("3_qhqgy")
+
+[node name="PushArea" type="Area2D" parent="." unique_id=1071685821]
+collision_layer = 0
+collision_mask = 12
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PushArea" unique_id=1552262741]
+position = Vector2(-30, -5)
+shape = SubResource("CircleShape2D_ghfay")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=2031250827]
+libraries/ = SubResource("AnimationLibrary_tuyoq")
+
+[node name="HUD" type="CanvasLayer" parent="." unique_id=1620174178]
+
+[node name="HealthBar" type="ProgressBar" parent="HUD" unique_id=2093796487]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 180.0
+offset_bottom = 36.0
+theme_override_styles/background = SubResource("StyleBoxFlat_ghfay")
+theme_override_styles/fill = SubResource("StyleBoxFlat_y3m2c")
+max_value = 5.0
+step = 1.0
+value = 5.0
+show_percentage = false
+
+[node name="SkillBar" type="HBoxContainer" parent="HUD" unique_id=1483244504]
+offset_left = 20.0
+offset_top = 45.0
+offset_right = 108.0
+offset_bottom = 87.0
+
+[node name="PushBar" type="ProgressBar" parent="HUD/SkillBar" unique_id=1439477789]
+custom_minimum_size = Vector2(42, 42)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_0gxiq")
+theme_override_styles/fill = SubResource("StyleBoxFlat_g5nlp")
+show_percentage = false
+
+[node name="DashBar" type="ProgressBar" parent="HUD/SkillBar" unique_id=1670154725]
+custom_minimum_size = Vector2(42, 42)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_xmj7a")
+theme_override_styles/fill = SubResource("StyleBoxFlat_ytc45")
+show_percentage = false
+
+[node name="RuneLabel" type="Label" parent="HUD" unique_id=2010921346]
+offset_left = 1000.0
+offset_top = 20.0
+offset_right = 1040.0
+offset_bottom = 43.0
+
+[node name="JumpSound" type="AudioStreamPlayer2D" parent="." unique_id=1542134549]
+stream = ExtResource("4_fjrip")
+
+[node name="LandSound" type="AudioStreamPlayer2D" parent="." unique_id=591672109]
+stream = ExtResource("5_smehm")
+
+[node name="HitSound" type="AudioStreamPlayer2D" parent="." unique_id=1856392521]
+stream = ExtResource("6_ur7pv")
+
+[node name="ParrySound" type="AudioStreamPlayer2D" parent="." unique_id=1977840636]
+stream = ExtResource("7_y4r1p")
+
+[node name="Foot" type="Marker2D" parent="." unique_id=885168814]
+position = Vector2(0, 16)

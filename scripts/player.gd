@@ -1,17 +1,23 @@
 extends CharacterBody2D
 
-const SPEED = 90.0
-const JUMP_VELOCITY = -350.0
+const SPEED = 100.0
+const GROUND_ACCEL = 900.0
+const GROUND_FRICTION = 1200.0
 const AIR_ACCEL = 800.0
+const AIR_FRICTION = 400.0
+const JUMP_VELOCITY = -300.0
 
-const DASH_SPEED = 400.0
-const DASH_DURATION = 0.20
+const FALL_GRAVITY_MULT = 1.5 # rớt nhanh
+
+const DASH_SPEED = 350.0
+const DASH_DURATION = 0.10
 const DASH_COOLDOWN = 1.0
-const DASH_BOUNCE_MULTIPLIER = 1.2
+const DASH_BOUNCE_MULTIPLIER = 1.3
 
 const PUSH_COOLDOWN = 1.5
 const PUSH_FORCE = DASH_SPEED * 0.75
-
+@onready var foot_point: Marker2D = $FootPoint
+@onready var body_point: Marker2D = $BodyPoint
 @onready var shield_area: Area2D = $ShieldPivot/Area2D
 @onready var push_area: Area2D = $PushArea
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
@@ -76,8 +82,8 @@ func take_damage(amount: int, hit_from: Vector2 = Vector2.ZERO) -> void:
 	health_bar.value = hp
 	invuln_timer = 0.8 
 	
-	modulate = Color(1.0, 0.3, 0.3)
-	get_tree().create_timer(0.15).timeout.connect(func(): if is_instance_valid(self): modulate = Color.WHITE)
+	$Sprite2D.modulate = Color(1.0, 0.3, 0.3) 
+	get_tree().create_timer(0.15).timeout.connect(func(): if is_instance_valid(self): $Sprite2D.modulate = Color.WHITE)
 	
 	if hit_from != Vector2.ZERO:
 		var knockback_dir := hit_from.direction_to(global_position)
@@ -115,16 +121,19 @@ func update_movement(delta: float) -> void:
 		
 	if is_on_floor():
 		if is_bouncing:
-			velocity.x = move_toward(velocity.x, 0, AIR_ACCEL * delta)
+			var nudge := move_direction
+			velocity.x = move_toward(velocity.x, 0.0, AIR_ACCEL * delta)
 		elif move_direction:
-			velocity.x = move_direction * SPEED
+			var is_turning := move_direction*velocity.x < 0.0
+			var accel := GROUND_FRICTION if is_turning else GROUND_ACCEL
+			velocity.x = move_toward(velocity.x, move_direction * SPEED, accel * delta)
 		else:
-			velocity.x = move_toward(velocity.x, 0, SPEED)
+			velocity.x = move_toward(velocity.x, 0.0, SPEED)
 	elif not is_bouncing:
 		if move_direction:
 			velocity.x = move_toward(velocity.x, move_direction * SPEED, AIR_ACCEL * delta)
 		else:
-			velocity.x = move_toward(velocity.x, 0, AIR_ACCEL * delta * 0.5)
+			velocity.x = move_toward(velocity.x, 0.0, AIR_ACCEL * delta * 0.5)
 
 func dash() -> void:
 	var dash_dir := global_position.direction_to(get_global_mouse_position())
@@ -133,6 +142,7 @@ func dash() -> void:
 	velocity = dash_dir * DASH_SPEED
 	dash_timer = DASH_DURATION
 	dash_cooldown_timer = DASH_COOLDOWN
+	VFXManager.spawn(VFXManager.DASH_EFFECT, body_point.global_position, dash_dir.angle())
 	is_bouncing = false
 
 func push_nearby_enemies() -> void:
@@ -196,10 +206,14 @@ func _physics_process(delta: float) -> void:
 		if abs(velocity.x) <= SPEED:
 			is_bouncing = false
 	else:
-		velocity += get_gravity() * delta
+		var gravity_mult := 1.0
+		if velocity.y > 0.0:
+			gravity_mult = FALL_GRAVITY_MULT
+		velocity += get_gravity() * delta * gravity_mult
 			
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
+		VFXManager.spawn(VFXManager.DUST_JUMP, foot_point.global_position, 0.0, foot_point)
 		jump_sound.pitch_scale = randf_range(0.95, 1.05)
 		jump_sound.play()
 			
@@ -207,6 +221,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	
 	if is_on_floor() and not was_on_floor:
+		VFXManager.spawn(VFXManager.DUST_IMPACT, foot_point.global_position, 0.0, foot_point)
 		land_sound.pitch_scale = randf_range(0.9, 1.1)
 		land_sound.play()
 	was_on_floor = is_on_floor()

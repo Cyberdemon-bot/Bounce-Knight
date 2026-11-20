@@ -1,6 +1,6 @@
 extends Area2D
 
-const SPEED = 300.0
+const SPEED = 150.0
 var direction: Vector2 = Vector2.RIGHT
 var damage: int = 1
 var is_reflected: bool = false
@@ -29,7 +29,7 @@ func _on_body_entered(body: Node2D) -> void:
 			queue_free()
 			return
 			
-	queue_free()
+	#queue_free()
 
 func reflect(new_direction: Vector2) -> void:
 	if is_reflected:

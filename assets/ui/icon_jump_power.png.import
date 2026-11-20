@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dowlau8051hcx"
-path="res://.godot/imported/tileset.png-c50288acd069fa293d7940a084811264.ctex"
+uid="uid://cg5txmi0fjvio"
+path="res://.godot/imported/icon_jump_power.png-655890e4658a334c2ff01eecfe84554f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/tileset.png"
-dest_files=["res://.godot/imported/tileset.png-c50288acd069fa293d7940a084811264.ctex"]
+source_file="res://assets/ui/icon_jump_power.png"
+dest_files=["res://.godot/imported/icon_jump_power.png-655890e4658a334c2ff01eecfe84554f.ctex"]
 
 [params]
 

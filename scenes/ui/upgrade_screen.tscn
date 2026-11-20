@@ -1,0 +1,153 @@
+[gd_scene format=3 uid="uid://dlu4mp7h45vk"]
+
+[ext_resource type="FontFile" uid="uid://b51fxejl3mefp" path="res://assets/assets_ui_font_pixel.ttf" id="1_clnow"]
+[ext_resource type="PackedScene" uid="uid://bww0xtvrqmms" path="res://scenes/ui/upgrade_slot.tscn" id="2_eg2gl"]
+[ext_resource type="Script" uid="uid://dvis5ou1kdhuu" path="res://scripts/ui/upgrade_screen.gd" id="2_se0nm"]
+[ext_resource type="Texture2D" uid="uid://bwdga2wiyck51" path="res://assets/background/assets_ui_bg_titlescreen.png" id="3_g4jv7"]
+[ext_resource type="Texture2D" uid="uid://bpe65v6ffdrmv" path="res://assets/ui/icon_health.png" id="3_giv8v"]
+[ext_resource type="Texture2D" uid="uid://bcaxrwt8dunt0" path="res://assets/ui/icon_speed.png" id="4_se0nm"]
+[ext_resource type="Texture2D" uid="uid://cg5txmi0fjvio" path="res://assets/ui/icon_jump_power.png" id="5_g4jv7"]
+[ext_resource type="Texture2D" uid="uid://yav2fy8fqor4" path="res://assets/ui/icon_power_shield.png" id="7_ygxdb"]
+[ext_resource type="Texture2D" uid="uid://c6p42ajrp1u23" path="res://assets/ui/icon_bash_shield.png" id="8_shjbj"]
+[ext_resource type="Texture2D" uid="uid://b0e4k6g5c4a1c" path="res://assets/ui/icon_skill_shield.png" id="10_g4jv7"]
+
+[sub_resource type="Theme" id="Theme_0xrkb"]
+default_font = ExtResource("1_clnow")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0xrkb"]
+bg_color = Color(0.10980392, 0.1254902, 0.2, 0.8627451)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g4jv7"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 4
+border_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
+
+[node name="UpgradeScreen" type="Control" unique_id=508913925]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_0xrkb")
+script = ExtResource("2_se0nm")
+metadata/_edit_use_anchors_ = true
+
+[node name="Background" type="TextureRect" parent="." unique_id=204879720]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_g4jv7")
+expand_mode = 1
+stretch_mode = 6
+metadata/_edit_use_anchors_ = true
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=318186803]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 16
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1602941325]
+layout_mode = 2
+theme_override_constants/separation = 18
+alignment = 1
+
+[node name="TopBar" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1123833314]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer/TopBar" unique_id=1035514522]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
+text = "UPGRADE KNIGHT"
+
+[node name="CoinLabel" type="Label" parent="MarginContainer/VBoxContainer/TopBar" unique_id=298240496]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
+text = "RUNES: 100"
+
+[node name="SlotGrid" type="GridContainer" parent="MarginContainer/VBoxContainer" unique_id=1120073015]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/h_separation = 24
+theme_override_constants/v_separation = 12
+columns = 3
+
+[node name="health" parent="MarginContainer/VBoxContainer/SlotGrid" unique_id=1651978702 instance=ExtResource("2_eg2gl")]
+layout_mode = 2
+skill_name = "HEALTH"
+skill_desc = "Increase max health."
+icon_texture = ExtResource("3_giv8v")
+
+[node name="speed" parent="MarginContainer/VBoxContainer/SlotGrid" unique_id=738847565 instance=ExtResource("2_eg2gl")]
+layout_mode = 2
+skill_name = "SPEED"
+skill_desc = "Move faster on ground."
+icon_texture = ExtResource("4_se0nm")
+
+[node name="jump_power" parent="MarginContainer/VBoxContainer/SlotGrid" unique_id=1211367155 instance=ExtResource("2_eg2gl")]
+layout_mode = 2
+skill_name = "JUMP POWER"
+skill_desc = "Jump higher up the tower."
+icon_texture = ExtResource("5_g4jv7")
+
+[node name="shield" parent="MarginContainer/VBoxContainer/SlotGrid" unique_id=2003370472 instance=ExtResource("2_eg2gl")]
+layout_mode = 2
+skill_name = "MIGHTIER SHIELD"
+skill_desc = "Block more hits before break."
+icon_texture = ExtResource("7_ygxdb")
+
+[node name="power_shield" parent="MarginContainer/VBoxContainer/SlotGrid" unique_id=1080814903 instance=ExtResource("2_eg2gl")]
+layout_mode = 2
+skill_name = "FASTER BASH"
+skill_desc = "Bounce higher with shield."
+icon_texture = ExtResource("8_shjbj")
+
+[node name="bash_shield" parent="MarginContainer/VBoxContainer/SlotGrid" unique_id=661333543 instance=ExtResource("2_eg2gl")]
+layout_mode = 2
+skill_name = "DISPEL"
+skill_desc = "Press E to dispel enemies using shield"
+icon_texture = ExtResource("10_g4jv7")
+
+[node name="InfoPanel" type="PanelContainer" parent="MarginContainer/VBoxContainer" unique_id=1992079665]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_0xrkb")
+
+[node name="InfoLabel" type="Label" parent="MarginContainer/VBoxContainer/InfoPanel" unique_id=2116584348]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Hover an icon or button to see details."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RetryButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=1523679510]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
+theme_override_colors/font_focus_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
+theme_override_colors/font_pressed_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
+theme_override_colors/font_hover_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_g4jv7")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_g4jv7")
+theme_override_styles/hover = SubResource("StyleBoxFlat_g4jv7")
+theme_override_styles/focus = SubResource("StyleBoxFlat_g4jv7")
+text = "PLAY AGAIN"
