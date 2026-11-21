@@ -9,7 +9,7 @@ const JUMP_VELOCITY = -270.0
 
 const FALL_GRAVITY_MULT = 1.5 # rớt nhanh
 const COYOTE_TIME = 0.1
-const DASH_BOUNCE_GRACE = 0.05
+const DASH_BOUNCE_GRACE = 0.025
 
 
 const DASH_SPEED = 350.0
@@ -142,8 +142,8 @@ func update_movement(delta: float) -> void:
 			velocity.x = move_toward(velocity.x, move_direction * SPEED, AIR_ACCEL * delta)
 		else:
 			velocity.x = move_toward(velocity.x, 0.0, AIR_FRICTION * delta)
-	elif move_direction != 0.0:
-		var speed_ratio := clampf(abs(velocity.x) / BOUNCE_REF_SPEED, 0.0, 1.0)
+	elif move_direction != 0.0: # ng chs nhích quỹ đạo nếu velocity.x nhỏ
+		var speed_ratio := clampf(abs(velocity.x) / BOUNCE_REF_SPEED, 0.0, 1.0) 
 		var nudge_accel := lerpf(BOUNCE_NUDGE_MAX, BOUNCE_NUDGE_MIN, speed_ratio)
 		velocity.x += move_direction * nudge_accel * delta
 
@@ -211,7 +211,7 @@ func _physics_process(delta: float) -> void:
 				did_bounce = true
 				break
 				
-		if not did_bounce and dash_timer <= 0.0:
+		if not did_bounce and dash_timer <= 0.0: # cho ng chs bounce nếu gần tường mà k chạm 
 			var grace_hit := move_and_collide(prev_velocity * DASH_BOUNCE_GRACE, true)
 			if grace_hit and prev_velocity.dot(grace_hit.get_normal()) < -10.0:
 				global_position += grace_hit.get_travel()
@@ -243,7 +243,7 @@ func _physics_process(delta: float) -> void:
 		jump_sound.play()
 		coyote_timer = 0.0
 
-	if Input.is_action_just_released("jump") and is_jumping:
+	if Input.is_action_just_released("jump") and is_jumping: # nhảy ngắn
 		velocity.y *= 0.2
 		is_jumping = false
 	update_movement(delta)
