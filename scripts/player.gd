@@ -8,6 +8,8 @@ const AIR_FRICTION = 400.0
 const JUMP_VELOCITY = -270.0
 
 const FALL_GRAVITY_MULT = 1.5 # rớt nhanh
+const COYOTE_TIME = 0.1
+const DASH_BOUNCE_GRACE = 0.05
 
 const DASH_SPEED = 350.0
 const DASH_DURATION = 0.10
@@ -31,7 +33,7 @@ const PUSH_FORCE = DASH_SPEED * 0.75
 @onready var parry_sound: AudioStreamPlayer2D = $ParrySound
 
 var was_on_floor: bool = false
-
+var coyote_timer: float = 0.0
 var is_bouncing: bool = false
 var dash_timer: float = 0.0
 var dash_cooldown_timer: float = 0.0
@@ -199,24 +201,34 @@ func _physics_process(delta: float) -> void:
 				break
 				
 		if not did_bounce and dash_timer <= 0.0:
-			velocity *= 0.4
+			var grace_hit := move_and_collide(prev_velocity * DASH_BOUNCE_GRACE, true)
+			if grace_hit and prev_velocity.dot(grace_hit.get_normal()) < -10.0:
+				global_position += grace_hit.get_travel()
+				velocity = prev_velocity.bounce(grace_hit.get_normal()) * DASH_BOUNCE_MULTIPLIER
+				is_bouncing = true
+			else:
+				velocity *= 0.4
 		return
 		
 	if is_on_floor():
+		coyote_timer = COYOTE_TIME
 		if abs(velocity.x) <= SPEED:
 			is_bouncing = false
 	else:
 		var gravity_mult := 1.0
+		coyote_timer = max(coyote_timer-delta, 0.0)
 		if velocity.y > 0.0:
 			gravity_mult = FALL_GRAVITY_MULT
 		velocity += get_gravity() * delta * gravity_mult
 			
-	if Input.is_action_just_pressed("jump") and is_on_floor():
+	if Input.is_action_just_pressed("jump") and coyote_timer > 0.0:
 		velocity.y = JUMP_VELOCITY
 		VFXManager.spawn(VFXManager.DUST_JUMP, foot_point.global_position, 0.0, foot_point)
 		jump_sound.pitch_scale = randf_range(0.95, 1.05)
 		jump_sound.play()
-			
+		coyote_timer = 0.0
+	if Input.is_action_just_released("jump") and velocity.y < 0.0:
+		velocity.y = max(velocity.y, 0.0)
 	update_movement(delta)
 	move_and_slide()
 	
