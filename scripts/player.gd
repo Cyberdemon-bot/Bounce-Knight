@@ -9,8 +9,8 @@ const JUMP_VELOCITY = -270.0
 
 const FALL_GRAVITY_MULT = 1.5 # rớt nhanh
 const COYOTE_TIME = 0.1
+const JUMP_BUFFER_TIME = 0.1 
 const DASH_BOUNCE_GRACE = 0.025
-
 
 const DASH_SPEED = 350.0
 const DASH_DURATION = 0.10
@@ -38,7 +38,8 @@ const PUSH_FORCE = DASH_SPEED * 0.75
 @onready var parry_sound: AudioStreamPlayer2D = $ParrySound
 
 var was_on_floor: bool = false
-var coyote_timer: float = 0.
+var coyote_timer: float = 0.0
+var jump_buffer_timer: float = 0.0
 var is_jumping: bool = false
 var is_bouncing: bool = false
 var dash_timer: float = 0.0
@@ -179,8 +180,14 @@ func _physics_process(delta: float) -> void:
 		dash_cooldown_timer -= delta
 	if push_cooldown_timer > 0.0:
 		push_cooldown_timer -= delta
-		
-	if invuln_timer > 0.0: invuln_timer -= delta
+	if invuln_timer > 0.0:
+		invuln_timer -= delta
+
+	# Ghi nhận jump buffer ở đây để không bị bỏ sót khi đang dash
+	if Input.is_action_just_pressed("jump"):
+		jump_buffer_timer = JUMP_BUFFER_TIME
+	elif jump_buffer_timer > 0.0:
+		jump_buffer_timer = max(jump_buffer_timer - delta, 0.0)
 	
 	if dash_timer > 0.0:
 		dash_timer -= delta
@@ -234,17 +241,25 @@ func _physics_process(delta: float) -> void:
 			gravity_mult = FALL_GRAVITY_MULT
 		velocity += get_gravity() * delta * gravity_mult
 
-	if Input.is_action_just_pressed("jump") and coyote_timer > 0.0:
+	# Thực hiện nhảy khi có buffer và còn coyote time
+	if jump_buffer_timer > 0.0 and coyote_timer > 0.0:
 		velocity.y = JUMP_VELOCITY
 		is_jumping = true
 		VFXManager.spawn(VFXManager.DUST_JUMP, foot_point.global_position, 0.0, foot_point)
 		jump_sound.pitch_scale = randf_range(0.95, 1.05)
 		jump_sound.play()
 		coyote_timer = 0.0
+		jump_buffer_timer = 0.0
+		
+		# Xử lý trường hợp bấm và thả phím nhảy quá nhanh trước khi chạm đất
+		if not Input.is_action_pressed("jump"):
+			velocity.y *= 0.2
+			is_jumping = false
 
 	if Input.is_action_just_released("jump") and is_jumping: # nhảy ngắn
 		velocity.y *= 0.2
 		is_jumping = false
+		
 	update_movement(delta)
 	move_and_slide()
 	
