@@ -129,7 +129,6 @@ func update_movement(delta: float) -> void:
 		
 	if is_on_floor():
 		if is_bouncing:
-			var nudge := move_direction
 			velocity.x = move_toward(velocity.x, 0.0, AIR_ACCEL * delta)
 		elif move_direction:
 			var is_turning := move_direction*velocity.x < 0.0
