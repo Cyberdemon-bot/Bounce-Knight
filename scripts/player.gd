@@ -11,6 +11,7 @@ const FALL_GRAVITY_MULT = 1.5 # rớt nhanh
 const COYOTE_TIME = 0.1
 const JUMP_BUFFER_TIME = 0.1 
 const DASH_BOUNCE_GRACE = 0.025
+const CORNER_CORRECTION_PX = 6
 
 const DASH_SPEED = 350.0
 const DASH_DURATION = 0.10
@@ -119,6 +120,22 @@ func _process(_delta: float) -> void:
 	var mouse_pos := get_global_mouse_position()
 	$ShieldPivot.look_at(mouse_pos)
 	$ShieldPivot/Sprite2D.flip_v = mouse_pos.x < global_position.x
+	
+func apply_corner_correction(delta: float) -> void:
+	if velocity.y >= 0.0:
+		return
+
+	var up_step := Vector2(0.0, velocity.y * delta)
+	if not test_move(global_transform, up_step):
+		return
+
+	for i in range(1, CORNER_CORRECTION_PX + 1):
+		for dir in [1, -1]:
+			var offset := Vector2(i * dir, 0.0)
+			if not test_move(global_transform.translated(offset), up_step):
+				global_position.x += offset.x
+				return
+
 
 func update_movement(delta: float) -> void:
 	var move_direction := Input.get_axis("move_left", "move_right")
@@ -261,6 +278,7 @@ func _physics_process(delta: float) -> void:
 		is_jumping = false
 		
 	update_movement(delta)
+	apply_corner_correction(delta)
 	move_and_slide()
 	
 	if is_on_floor() and not was_on_floor:
