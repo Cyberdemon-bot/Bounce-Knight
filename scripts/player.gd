@@ -11,10 +11,15 @@ const FALL_GRAVITY_MULT = 1.5 # rớt nhanh
 const COYOTE_TIME = 0.1
 const DASH_BOUNCE_GRACE = 0.05
 
+
 const DASH_SPEED = 350.0
 const DASH_DURATION = 0.10
 const DASH_COOLDOWN = 1.0
 const DASH_BOUNCE_MULTIPLIER = 1.3
+
+const BOUNCE_NUDGE_MAX = 400.0 # chuyển động ném xiên dịch chuyển tối đa ntn
+const BOUNCE_NUDGE_MIN = 40.0 # tối thiểu
+const BOUNCE_REF_SPEED = DASH_SPEED * DASH_BOUNCE_MULTIPLIER
 
 const PUSH_COOLDOWN = 1.5
 const PUSH_FORCE = DASH_SPEED * 0.75
@@ -33,7 +38,8 @@ const PUSH_FORCE = DASH_SPEED * 0.75
 @onready var parry_sound: AudioStreamPlayer2D = $ParrySound
 
 var was_on_floor: bool = false
-var coyote_timer: float = 0.0
+var coyote_timer: float = 0.
+var is_jumping: bool = false
 var is_bouncing: bool = false
 var dash_timer: float = 0.0
 var dash_cooldown_timer: float = 0.0
@@ -132,10 +138,14 @@ func update_movement(delta: float) -> void:
 		else:
 			velocity.x = move_toward(velocity.x, 0.0, SPEED)
 	elif not is_bouncing:
-		if move_direction:
+		if move_direction != 0.0:
 			velocity.x = move_toward(velocity.x, move_direction * SPEED, AIR_ACCEL * delta)
 		else:
-			velocity.x = move_toward(velocity.x, 0.0, AIR_ACCEL * delta * 0.5)
+			velocity.x = move_toward(velocity.x, 0.0, AIR_FRICTION * delta)
+	elif move_direction != 0.0:
+		var speed_ratio := clampf(abs(velocity.x) / BOUNCE_REF_SPEED, 0.0, 1.0)
+		var nudge_accel := lerpf(BOUNCE_NUDGE_MAX, BOUNCE_NUDGE_MIN, speed_ratio)
+		velocity.x += move_direction * nudge_accel * delta
 
 func dash() -> void:
 	var dash_dir := global_position.direction_to(get_global_mouse_position())
@@ -145,6 +155,7 @@ func dash() -> void:
 	dash_timer = DASH_DURATION
 	dash_cooldown_timer = DASH_COOLDOWN
 	VFXManager.spawn(VFXManager.DASH_EFFECT, body_point.global_position, dash_dir.angle())
+	is_jumping = false
 	is_bouncing = false
 
 func push_nearby_enemies() -> void:
@@ -212,23 +223,29 @@ func _physics_process(delta: float) -> void:
 		
 	if is_on_floor():
 		coyote_timer = COYOTE_TIME
-		if abs(velocity.x) <= SPEED:
-			is_bouncing = false
+		if velocity.y >= 0.0:
+			is_jumping = false
+			if abs(velocity.x) <= SPEED:
+				is_bouncing = false
 	else:
 		var gravity_mult := 1.0
-		coyote_timer = max(coyote_timer-delta, 0.0)
+		coyote_timer = max(coyote_timer - delta, 0.0)
 		if velocity.y > 0.0:
+			is_jumping = false
 			gravity_mult = FALL_GRAVITY_MULT
 		velocity += get_gravity() * delta * gravity_mult
-			
+
 	if Input.is_action_just_pressed("jump") and coyote_timer > 0.0:
 		velocity.y = JUMP_VELOCITY
+		is_jumping = true
 		VFXManager.spawn(VFXManager.DUST_JUMP, foot_point.global_position, 0.0, foot_point)
 		jump_sound.pitch_scale = randf_range(0.95, 1.05)
 		jump_sound.play()
 		coyote_timer = 0.0
-	if Input.is_action_just_released("jump") and velocity.y < 0.0:
-		velocity.y = max(velocity.y, 0.0)
+
+	if Input.is_action_just_released("jump") and is_jumping:
+		velocity.y *= 0.2
+		is_jumping = false
 	update_movement(delta)
 	move_and_slide()
 	
