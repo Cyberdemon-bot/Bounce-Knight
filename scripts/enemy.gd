@@ -10,7 +10,7 @@ const SEPARATION_FORCE = 450.0
 @export var damage: int = 1 
 @export var bullet_scene: PackedScene
 @export var rune_scene: PackedScene
-@export var rune_drop_count: int = 3
+@export var rune_drop_count: int = 15
 
 @onready var separation_area: Area2D = $SeparationArea
 @onready var anim_player: AnimationPlayer = $AnimationPlayer

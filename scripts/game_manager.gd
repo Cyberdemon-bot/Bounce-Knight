@@ -3,55 +3,43 @@ extends Node
 signal runes_changed(new_amount: int)
 signal stats_upgraded
 
-var runes: int = 0
+const UPGRADES := {
+	&"max_hp": { "base": 5.0, "step": 1.0, "max": 5, "cost": 20, "cost_step": 15 },
+	&"speed": { "base": 100.0, "step": 15.0, "max": 5, "cost": 20, "cost_step": 15 },
+	&"jump_power": { "base": -270.0, "step": -10.0, "max": 5, "cost": 20, "cost_step": 15 },
+	&"dash_speed": { "base": 350.0, "step": 35.0, "max": 5, "cost": 25, "cost_step": 20 },
+	&"dash_bounce_mult": { "base": 1.3, "step": 0.12,  "max": 5, "cost": 25, "cost_step": 20 },
+	&"skill_cooldown": { "base": 20.0, "step": -2, "max": 5, "cost": 30, "cost_step": 25},
+}
 
-var hp_level: int = 0
-var damage_level: int = 0
-var cooldown_level: int = 0
+var runes: int = 100
+var levels: Dictionary = {}
 
-func get_hp_cost() -> int: return 5 + hp_level * 5
-func get_damage_cost() -> int: return 8 + damage_level * 7
-func get_cooldown_cost() -> int: return 6 + cooldown_level * 6
 
-func get_max_hp() -> int:
-	return 5 + hp_level * 2
 
-func get_damage() -> int:
-	return 1 + damage_level
+func get_level(id: StringName) -> int:
+	return levels.get(id, 0)
 
-func get_cooldown_multiplier() -> float:
-	return max(0.4, 1.0 - cooldown_level * 0.12)
+func get_max_level(id: StringName) -> int:
+	return UPGRADES[id].max
+	
+func get_cost(id: StringName) -> int:
+	var cfg: Dictionary = UPGRADES[id]
+	return cfg.cost + get_level(id)*cfg.cost_step
+
+func stat(id: StringName) -> float:
+	var cfg: Dictionary = UPGRADES[id]
+	return cfg.base + get_level(id)*cfg.step
 
 func add_runes(amount: int) -> void:
 	runes += amount
 	runes_changed.emit(runes)
 
-func upgrade_hp() -> bool:
-	var cost := get_hp_cost()
-	if runes >= cost:
-		runes -= cost
-		hp_level += 1
-		runes_changed.emit(runes)
-		stats_upgraded.emit()
-		return true
-	return false
-
-func upgrade_damage() -> bool:
-	var cost := get_damage_cost()
-	if runes >= cost:
-		runes -= cost
-		damage_level += 1
-		runes_changed.emit(runes)
-		stats_upgraded.emit()
-		return true
-	return false
-
-func upgrade_cooldown() -> bool:
-	var cost := get_cooldown_cost()
-	if runes >= cost:
-		runes -= cost
-		cooldown_level += 1
-		runes_changed.emit(runes)
-		stats_upgraded.emit()
-		return true
-	return false
+func buy_upgrade(id: StringName) -> bool:
+	var lvl := get_level(id)
+	var cost := get_cost(id)
+	if runes < cost or lvl >= get_max_level(id):
+		return false
+	add_runes(-cost)
+	levels[id] = lvl+1
+	return true

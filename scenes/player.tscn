@@ -3,7 +3,12 @@
 [ext_resource type="Script" uid="uid://bogl73c250wuu" path="res://scripts/player.gd" id="1_g2els"]
 [ext_resource type="Texture2D" uid="uid://c84rjrkdnfqug" path="res://assets/sprites/aya.png" id="2_g2els"]
 [ext_resource type="Texture2D" uid="uid://pd47kri10y4l" path="res://assets/sprites/shield.png" id="3_qhqgy"]
+[ext_resource type="Texture2D" uid="uid://c8yx5krb8c087" path="res://assets/ui/health_frame.png" id="4_d2wvv"]
 [ext_resource type="AudioStream" uid="uid://dj7qgioqdw6wd" path="res://assets/sfx/sfx_jump.wav" id="4_fjrip"]
+[ext_resource type="Texture2D" uid="uid://wshevrso2c0e" path="res://assets/ui/cooldown_skill.png" id="4_jej6c"]
+[ext_resource type="Texture2D" uid="uid://c3sa3sfmvifsi" path="res://assets/ui/health_empty.png" id="4_y4r1p"]
+[ext_resource type="Texture2D" uid="uid://5ebbc01dhjd5" path="res://assets/ui/health_full.png" id="5_d2wvv"]
+[ext_resource type="Texture2D" uid="uid://d1m277eg2ww6o" path="res://assets/ui/cooldown_dash.png" id="5_f1ej7"]
 [ext_resource type="AudioStream" uid="uid://b5wqluc2duxal" path="res://assets/sfx/sfx_land.wav" id="5_smehm"]
 [ext_resource type="AudioStream" uid="uid://dcspnjsvvq8wt" path="res://assets/sfx/sfx_hit_spikes.wav" id="6_ur7pv"]
 [ext_resource type="AudioStream" uid="uid://drw8enxm7c8g" path="res://assets/sfx/sfx_shield_block.wav" id="7_y4r1p"]
@@ -115,21 +120,6 @@ _data = {
 &"run": SubResource("Animation_qlg0r")
 }
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ghfay"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y3m2c"]
-bg_color = Color(1, 0, 0, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0gxiq"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g5nlp"]
-bg_color = Color(0.6784314, 0.84705883, 0.9019608, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xmj7a"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ytc45"]
-bg_color = Color(0.6784314, 0.84705883, 0.9019608, 1)
-
 [node name="Player" type="CharacterBody2D" unique_id=1816567509]
 collision_layer = 2
 script = ExtResource("1_g2els")
@@ -147,9 +137,10 @@ shape = SubResource("RectangleShape2D_ghfay")
 zoom = Vector2(1.25, 1.25)
 
 [node name="Snow" type="GPUParticles2D" parent="Camera2D" unique_id=1103408815]
+z_index = -60
 position = Vector2(6.4623485e-27, -373)
 scale = Vector2(4.2958384, -7.945598)
-amount = 1000
+amount = 2000
 lifetime = 50.0
 preprocess = 30.0
 process_material = SubResource("ParticleProcessMaterial_ur7pv")
@@ -182,43 +173,53 @@ libraries/ = SubResource("AnimationLibrary_tuyoq")
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=1620174178]
 
-[node name="HealthBar" type="ProgressBar" parent="HUD" unique_id=2093796487]
-offset_left = 20.0
-offset_top = 20.0
-offset_right = 180.0
-offset_bottom = 36.0
-theme_override_styles/background = SubResource("StyleBoxFlat_ghfay")
-theme_override_styles/fill = SubResource("StyleBoxFlat_y3m2c")
-max_value = 5.0
-step = 1.0
-value = 5.0
-show_percentage = false
-
 [node name="SkillBar" type="HBoxContainer" parent="HUD" unique_id=1483244504]
-offset_left = 20.0
-offset_top = 45.0
-offset_right = 108.0
-offset_bottom = 87.0
+offset_left = 11.0
+offset_top = 38.0
+offset_right = 89.0
+offset_bottom = 80.0
+scale = Vector2(1.5, 1.5)
 
-[node name="PushBar" type="ProgressBar" parent="HUD/SkillBar" unique_id=1439477789]
+[node name="PushBar" type="TextureProgressBar" parent="HUD/SkillBar" unique_id=2046192455]
+unique_name_in_owner = true
+layout_mode = 2
+texture_under = ExtResource("4_jej6c")
+texture_progress = ExtResource("4_jej6c")
+tint_under = Color(0.5019608, 0.5019608, 0.5019608, 1)
+
+[node name="DashBar" type="TextureProgressBar" parent="HUD/SkillBar" unique_id=311488962]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(42, 42)
 layout_mode = 2
-theme_override_styles/background = SubResource("StyleBoxFlat_0gxiq")
-theme_override_styles/fill = SubResource("StyleBoxFlat_g5nlp")
-show_percentage = false
-
-[node name="DashBar" type="ProgressBar" parent="HUD/SkillBar" unique_id=1670154725]
-custom_minimum_size = Vector2(42, 42)
-layout_mode = 2
-theme_override_styles/background = SubResource("StyleBoxFlat_xmj7a")
-theme_override_styles/fill = SubResource("StyleBoxFlat_ytc45")
-show_percentage = false
+offset_transform_enabled = true
+texture_under = ExtResource("5_f1ej7")
+texture_progress = ExtResource("5_f1ej7")
+tint_under = Color(0.5019608, 0.5019608, 0.5019608, 1)
 
 [node name="RuneLabel" type="Label" parent="HUD" unique_id=2010921346]
 offset_left = 1000.0
 offset_top = 20.0
 offset_right = 1040.0
 offset_bottom = 43.0
+
+[node name="TextureRect" type="TextureRect" parent="HUD" unique_id=289878666]
+offset_left = 11.0
+offset_top = 9.0
+offset_right = 155.0
+offset_bottom = 25.0
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("4_d2wvv")
+
+[node name="HealthBar" type="TextureProgressBar" parent="HUD/TextureRect" unique_id=1552002955]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 2.0
+offset_top = 3.0
+offset_right = 142.0
+offset_bottom = 13.0
+value = 16.0
+texture_under = ExtResource("4_y4r1p")
+texture_progress = ExtResource("5_d2wvv")
 
 [node name="JumpSound" type="AudioStreamPlayer2D" parent="." unique_id=1542134549]
 stream = ExtResource("4_fjrip")

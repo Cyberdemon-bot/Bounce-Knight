@@ -1,37 +1,37 @@
 extends CharacterBody2D
 
-const SPEED = 100.0
+var speed: float
 const GROUND_ACCEL = 900.0
 const GROUND_FRICTION = 1200.0
 const AIR_ACCEL = 800.0
 const AIR_FRICTION = 400.0
-const JUMP_VELOCITY = -270.0
+var jump_velocity: float
 
 const FALL_GRAVITY_MULT = 1.5 # rớt nhanh
 const COYOTE_TIME = 0.1
 const JUMP_BUFFER_TIME = 0.1 
-const DASH_BOUNCE_GRACE = 0.025
+const DASH_BOUNCE_GRACE = 0.05
 const CORNER_CORRECTION_PX = 6
 
-const DASH_SPEED = 350.0
+var dash_speed: float
 const DASH_DURATION = 0.10
-const DASH_COOLDOWN = 1.0
-const DASH_BOUNCE_MULTIPLIER = 1.3
+var dash_cooldown: float
+var dash_bounce_mult: float
 
 const BOUNCE_NUDGE_MAX = 400.0 # chuyển động ném xiên dịch chuyển tối đa ntn
 const BOUNCE_NUDGE_MIN = 40.0 # tối thiểu
-const BOUNCE_REF_SPEED = DASH_SPEED * DASH_BOUNCE_MULTIPLIER
+var bounce_ref_speed = dash_speed * dash_bounce_mult
 
-const PUSH_COOLDOWN = 1.5
-const PUSH_FORCE = DASH_SPEED * 0.75
+var skill_cooldown = 1.0
+var skill_force = dash_speed * 0.75
 @onready var foot_point: Marker2D = $FootPoint
 @onready var body_point: Marker2D = $BodyPoint
 @onready var shield_area: Area2D = $ShieldPivot/Area2D
 @onready var push_area: Area2D = $PushArea
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
-@onready var health_bar: ProgressBar = $HUD/HealthBar
-@onready var dash_bar: ProgressBar = $HUD/SkillBar/DashBar
-@onready var push_bar: ProgressBar = $HUD/SkillBar/PushBar
+@onready var health_bar: TextureProgressBar = %HealthBar
+@onready var dash_bar: TextureProgressBar = $%DashBar
+@onready var push_bar: TextureProgressBar = $%PushBar
 @onready var rune_label: Label = $HUD/RuneLabel
 @onready var jump_sound: AudioStreamPlayer2D = $JumpSound
 @onready var land_sound: AudioStreamPlayer2D = $LandSound
@@ -45,36 +45,45 @@ var is_jumping: bool = false
 var is_bouncing: bool = false
 var dash_timer: float = 0.0
 var dash_cooldown_timer: float = 0.0
-var push_cooldown_timer: float = 0.0
+var skill_cooldown_timer: float = 0.0
 
 @export var max_hp: int = 5
 var hp: int
 var invuln_timer: float = 0.0 
 
 func _ready() -> void:
+	max_hp = int(GameManager.stat(&"max_hp"))
+	speed = GameManager.stat(&"speed")
+	jump_velocity = GameManager.stat(&"jump_power")
+	dash_speed = GameManager.stat(&"dash_speed")
+	dash_cooldown = 1.0
+	dash_bounce_mult = GameManager.stat(&"dash_bounce_mult")
+	bounce_ref_speed = maxf(dash_speed * dash_bounce_mult, 1.0)
+	skill_cooldown = GameManager.stat(&"skill_cooldown")
+	
 	hp = max_hp
 	health_bar.max_value = max_hp
 	health_bar.value = hp
-	dash_bar.max_value = DASH_COOLDOWN
-	dash_bar.value = DASH_COOLDOWN
-	push_bar.max_value = PUSH_COOLDOWN
-	push_bar.value = PUSH_COOLDOWN
+	dash_bar.max_value = dash_cooldown
+	dash_bar.value = dash_cooldown
+	push_bar.max_value = skill_cooldown
+	push_bar.value = skill_cooldown
 	shield_area.area_entered.connect(_on_shield_area_entered)
 	
 func update_skill_ui() -> void:
 	if dash_cooldown_timer > 0.0:
-		dash_bar.value = DASH_COOLDOWN - dash_cooldown_timer
-		dash_bar.modulate = Color(0.6, 0.6, 0.6) 
+		dash_bar.value = dash_cooldown - dash_cooldown_timer
+		#dash_bar.modulate = Color(0.6, 0.6, 0.6) 
 	else:
-		dash_bar.value = DASH_COOLDOWN
-		dash_bar.modulate = Color.WHITE 
+		dash_bar.value = dash_cooldown
+		#dash_bar.modulate = Color.WHITE 
 
-	if push_cooldown_timer > 0.0:
-		push_bar.value = PUSH_COOLDOWN - push_cooldown_timer
-		push_bar.modulate = Color(0.6, 0.6, 0.6)
+	if skill_cooldown_timer > 0.0:
+		push_bar.value = skill_cooldown - skill_cooldown_timer
+		#push_bar.modulate = Color(0.6, 0.6, 0.6)
 	else:
-		push_bar.value = PUSH_COOLDOWN
-		push_bar.modulate = Color.WHITE
+		push_bar.value = skill_cooldown
+		#push_bar.modulate = Color.WHITE
 
 func _on_shield_area_entered(area: Area2D) -> void:
 	if area.is_in_group("enemy_bullets"):
@@ -101,7 +110,7 @@ func take_damage(amount: int, hit_from: Vector2 = Vector2.ZERO) -> void:
 		is_bouncing = true
 		
 	if hp <= 0:
-		get_tree().call_deferred("reload_current_scene")
+		get_tree().change_scene_to_file("res://scenes/ui/upgrade_screen.tscn")
 
 
 func update_animation() -> void:
@@ -151,16 +160,16 @@ func update_movement(delta: float) -> void:
 		elif move_direction:
 			var is_turning := move_direction*velocity.x < 0.0
 			var accel := GROUND_FRICTION if is_turning else GROUND_ACCEL
-			velocity.x = move_toward(velocity.x, move_direction * SPEED, accel * delta)
+			velocity.x = move_toward(velocity.x, move_direction * speed, accel * delta)
 		else:
-			velocity.x = move_toward(velocity.x, 0.0, SPEED)
+			velocity.x = move_toward(velocity.x, 0.0, speed)
 	elif not is_bouncing:
 		if move_direction != 0.0:
-			velocity.x = move_toward(velocity.x, move_direction * SPEED, AIR_ACCEL * delta)
+			velocity.x = move_toward(velocity.x, move_direction * speed, AIR_ACCEL * delta)
 		else:
 			velocity.x = move_toward(velocity.x, 0.0, AIR_FRICTION * delta)
 	elif move_direction != 0.0: # ng chs nhích quỹ đạo nếu velocity.x nhỏ
-		var speed_ratio := clampf(abs(velocity.x) / BOUNCE_REF_SPEED, 0.0, 1.0) 
+		var speed_ratio := clampf(abs(velocity.x) / bounce_ref_speed, 0.0, 1.0) 
 		var nudge_accel := lerpf(BOUNCE_NUDGE_MAX, BOUNCE_NUDGE_MIN, speed_ratio)
 		velocity.x += move_direction * nudge_accel * delta
 
@@ -168,35 +177,35 @@ func dash() -> void:
 	var dash_dir := global_position.direction_to(get_global_mouse_position())
 	if dash_dir.x != 0.0:
 		$Sprite2D.flip_h = dash_dir.x < 0.0
-	velocity = dash_dir * DASH_SPEED
+	velocity = dash_dir * dash_speed
 	dash_timer = DASH_DURATION
-	dash_cooldown_timer = DASH_COOLDOWN
+	dash_cooldown_timer = dash_cooldown
 	VFXManager.spawn(VFXManager.DASH_EFFECT, body_point.global_position, dash_dir.angle())
 	is_jumping = false
 	is_bouncing = false
 
 func push_nearby_enemies() -> void:
-	push_cooldown_timer = PUSH_COOLDOWN
+	skill_cooldown_timer = skill_cooldown
 	for body in push_area.get_overlapping_bodies():
 		if body.has_method("on_hit_by_dash"):
 			var push_dir := global_position.direction_to(body.global_position)
 			if push_dir == Vector2.ZERO:
 				push_dir = Vector2.UP
 			push_dir = (push_dir + Vector2(0, -0.3)).normalized()
-			body.on_hit_by_dash(push_dir * PUSH_FORCE)
+			body.on_hit_by_dash(push_dir * skill_force)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
 		if event.keycode == KEY_Q and dash_timer <= 0.0 and dash_cooldown_timer <= 0.0:
 			dash()
-		elif event.keycode == KEY_E and push_cooldown_timer <= 0.0:
+		elif event.keycode == KEY_E and skill_cooldown_timer <= 0.0:
 			push_nearby_enemies()
 
 func _physics_process(delta: float) -> void:
 	if dash_cooldown_timer > 0.0:
 		dash_cooldown_timer -= delta
-	if push_cooldown_timer > 0.0:
-		push_cooldown_timer -= delta
+	if skill_cooldown_timer > 0.0:
+		skill_cooldown_timer -= delta
 	if invuln_timer > 0.0:
 		invuln_timer -= delta
 
@@ -214,10 +223,10 @@ func _physics_process(delta: float) -> void:
 		for body in shield_area.get_overlapping_bodies():
 			if body.has_method("on_hit_by_dash"):
 				var hit_dir := global_position.direction_to(body.global_position)
-				body.on_hit_by_dash(hit_dir * DASH_SPEED)
+				body.on_hit_by_dash(hit_dir * dash_speed)
 				
 				var bounce_normal := body.global_position.direction_to(global_position)
-				velocity = prev_velocity.bounce(bounce_normal) * DASH_BOUNCE_MULTIPLIER
+				velocity = prev_velocity.bounce(bounce_normal) * dash_bounce_mult
 				dash_timer = 0.0
 				is_bouncing = true
 				dash_cooldown_timer = 0.0
@@ -228,7 +237,7 @@ func _physics_process(delta: float) -> void:
 			var collision := get_slide_collision(i)
 			var normal := collision.get_normal()
 			if prev_velocity.dot(normal) < -10.0:
-				velocity = prev_velocity.bounce(normal) * DASH_BOUNCE_MULTIPLIER
+				velocity = prev_velocity.bounce(normal) * dash_bounce_mult
 				dash_timer = 0.0
 				is_bouncing = true
 				did_bounce = true
@@ -238,7 +247,7 @@ func _physics_process(delta: float) -> void:
 			var grace_hit := move_and_collide(prev_velocity * DASH_BOUNCE_GRACE, true)
 			if grace_hit and prev_velocity.dot(grace_hit.get_normal()) < -10.0:
 				global_position += grace_hit.get_travel()
-				velocity = prev_velocity.bounce(grace_hit.get_normal()) * DASH_BOUNCE_MULTIPLIER
+				velocity = prev_velocity.bounce(grace_hit.get_normal()) * dash_bounce_mult
 				is_bouncing = true
 			else:
 				velocity *= 0.4
@@ -248,7 +257,7 @@ func _physics_process(delta: float) -> void:
 		coyote_timer = COYOTE_TIME
 		if velocity.y >= 0.0:
 			is_jumping = false
-			if abs(velocity.x) <= SPEED:
+			if abs(velocity.x) <= speed:
 				is_bouncing = false
 	else:
 		var gravity_mult := 1.0
@@ -260,7 +269,7 @@ func _physics_process(delta: float) -> void:
 
 	# Thực hiện nhảy khi có buffer và còn coyote time
 	if jump_buffer_timer > 0.0 and coyote_timer > 0.0:
-		velocity.y = JUMP_VELOCITY
+		velocity.y = jump_velocity
 		is_jumping = true
 		VFXManager.spawn(VFXManager.DUST_JUMP, foot_point.global_position, 0.0, foot_point)
 		jump_sound.pitch_scale = randf_range(0.95, 1.05)

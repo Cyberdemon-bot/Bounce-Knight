@@ -2,22 +2,16 @@
 
 [ext_resource type="Script" uid="uid://bcitj66kmm4s7" path="res://scripts/ui/start_screen.gd" id="1_bvda4"]
 [ext_resource type="FontFile" uid="uid://b51fxejl3mefp" path="res://assets/assets_ui_font_pixel.ttf" id="1_h0ljh"]
+[ext_resource type="FontFile" uid="uid://c1rk47bvmkmgx" path="res://assets/assets_ui_font_pixel_2.otf" id="1_nb5g4"]
 [ext_resource type="Texture2D" uid="uid://bwdga2wiyck51" path="res://assets/background/assets_ui_bg_titlescreen.png" id="2_jl31a"]
+[ext_resource type="PackedScene" uid="uid://dd60symdwmmc5" path="res://scenes/ui/ui_button.tscn" id="5_6jygb"]
 
-[sub_resource type="Theme" id="Theme_nejm3"]
-default_font = ExtResource("1_h0ljh")
+[sub_resource type="Theme" id="Theme_yql1c"]
+default_font = ExtResource("1_nb5g4")
 
 [sub_resource type="FontVariation" id="FontVariation_n6b5g"]
 base_font = ExtResource("1_h0ljh")
 spacing_glyph = 3
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h0ljh"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 4
-border_color = Color(0.10980392, 0.1254902, 0.2, 1)
 
 [node name="StartScreenClassic" type="Control" unique_id=991237522]
 layout_mode = 3
@@ -26,7 +20,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = SubResource("Theme_nejm3")
+theme = SubResource("Theme_yql1c")
 script = ExtResource("1_bvda4")
 main_game_scene = "uid://b2oqga0pdkng1"
 metadata/_edit_use_anchors_ = true
@@ -76,28 +70,12 @@ layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 12
 
-[node name="PlayButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonList" unique_id=1881226440]
+[node name="PlayButton" parent="MarginContainer/VBoxContainer/ButtonList" unique_id=1682840967 instance=ExtResource("5_6jygb")]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
-theme_override_colors/font_focus_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
-theme_override_colors/font_hover_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_h0ljh")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_h0ljh")
-theme_override_styles/hover = SubResource("StyleBoxFlat_h0ljh")
-theme_override_styles/focus = SubResource("StyleBoxFlat_h0ljh")
-text = "PLAY
-"
+text = "Play"
 
-[node name="QuitButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonList" unique_id=906159215]
+[node name="QuitButton" parent="MarginContainer/VBoxContainer/ButtonList" unique_id=805686905 instance=ExtResource("5_6jygb")]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
-theme_override_colors/font_focus_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
-theme_override_colors/font_hover_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_h0ljh")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_h0ljh")
-theme_override_styles/hover = SubResource("StyleBoxFlat_h0ljh")
-theme_override_styles/focus = SubResource("StyleBoxFlat_h0ljh")
-text = "QUIT
-"
+text = "Quit"

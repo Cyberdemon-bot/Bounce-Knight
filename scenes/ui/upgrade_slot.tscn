@@ -1,56 +1,13 @@
 [gd_scene format=3 uid="uid://bww0xtvrqmms"]
 
 [ext_resource type="Script" uid="uid://2u7tx6pvhyku" path="res://scripts/ui/upgrade_slot.gd" id="1_2o6p1"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2o6p1"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 4
-border_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ku0s0"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 4
-border_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6xnit"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 4
-border_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6jfm5"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(1, 1, 1, 0.75)
-draw_center = false
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-corner_detail = 5
-expand_margin_left = 2.0
-expand_margin_top = 2.0
-expand_margin_right = 2.0
-expand_margin_bottom = 2.0
+[ext_resource type="Texture2D" uid="uid://du0xata7282sp" path="res://icon.svg" id="2_6jfm5"]
+[ext_resource type="Script" uid="uid://c4qwilqw8sitt" path="res://scripts/ui/icon_box.gd" id="2_6xnit"]
+[ext_resource type="PackedScene" uid="uid://dd60symdwmmc5" path="res://scenes/ui/ui_button.tscn" id="3_6xnit"]
 
 [node name="UpgradeSlot" type="VBoxContainer" unique_id=1651978702]
-offset_right = 40.0
-offset_bottom = 40.0
-theme_override_constants/separation = 4
+offset_right = 96.0
+offset_bottom = 73.0
 script = ExtResource("1_2o6p1")
 
 [node name="IconBox" type="TextureRect" parent="." unique_id=1912944226]
@@ -58,19 +15,11 @@ custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 size_flags_horizontal = 4
 mouse_filter = 0
+texture = ExtResource("2_6jfm5")
 expand_mode = 1
 stretch_mode = 5
+script = ExtResource("2_6xnit")
 
-[node name="LevelUpButton" type="Button" parent="." unique_id=201502740]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(96, 22)
+[node name="LevelUpButton" parent="." unique_id=1991690539 instance=ExtResource("3_6xnit")]
+custom_minimum_size = Vector2(128.175, 22)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
-theme_override_colors/font_focus_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
-theme_override_colors/font_pressed_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
-theme_override_colors/font_hover_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_2o6p1")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_ku0s0")
-theme_override_styles/hover = SubResource("StyleBoxFlat_6xnit")
-theme_override_styles/focus = SubResource("StyleBoxFlat_6jfm5")
-text = "LEVEL UP "

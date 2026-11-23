@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dlu4mp7h45vk"]
 
-[ext_resource type="FontFile" uid="uid://b51fxejl3mefp" path="res://assets/assets_ui_font_pixel.ttf" id="1_clnow"]
+[ext_resource type="FontFile" uid="uid://c1rk47bvmkmgx" path="res://assets/assets_ui_font_pixel_2.otf" id="1_g4jv7"]
 [ext_resource type="PackedScene" uid="uid://bww0xtvrqmms" path="res://scenes/ui/upgrade_slot.tscn" id="2_eg2gl"]
 [ext_resource type="Script" uid="uid://dvis5ou1kdhuu" path="res://scripts/ui/upgrade_screen.gd" id="2_se0nm"]
 [ext_resource type="Texture2D" uid="uid://bwdga2wiyck51" path="res://assets/background/assets_ui_bg_titlescreen.png" id="3_g4jv7"]
@@ -10,22 +10,16 @@
 [ext_resource type="Texture2D" uid="uid://yav2fy8fqor4" path="res://assets/ui/icon_power_shield.png" id="7_ygxdb"]
 [ext_resource type="Texture2D" uid="uid://c6p42ajrp1u23" path="res://assets/ui/icon_bash_shield.png" id="8_shjbj"]
 [ext_resource type="Texture2D" uid="uid://b0e4k6g5c4a1c" path="res://assets/ui/icon_skill_shield.png" id="10_g4jv7"]
+[ext_resource type="PackedScene" uid="uid://dd60symdwmmc5" path="res://scenes/ui/ui_button.tscn" id="11_cnp6h"]
 
 [sub_resource type="Theme" id="Theme_0xrkb"]
-default_font = ExtResource("1_clnow")
+default_font = ExtResource("1_g4jv7")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0xrkb"]
 bg_color = Color(0.10980392, 0.1254902, 0.2, 0.8627451)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g4jv7"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 4
-border_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
-
 [node name="UpgradeScreen" type="Control" unique_id=508913925]
+texture_filter = 1
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -34,6 +28,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_0xrkb")
 script = ExtResource("2_se0nm")
+game_scene = "uid://b2oqga0pdkng1"
 metadata/_edit_use_anchors_ = true
 
 [node name="Background" type="TextureRect" parent="." unique_id=204879720]
@@ -73,13 +68,13 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
-text = "UPGRADE KNIGHT"
+text = "Bounce back"
 
-[node name="CoinLabel" type="Label" parent="MarginContainer/VBoxContainer/TopBar" unique_id=298240496]
+[node name="RuneLabel" type="Label" parent="MarginContainer/VBoxContainer/TopBar" unique_id=298240496]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
-text = "RUNES: 100"
+text = "Runes: 100"
 
 [node name="SlotGrid" type="GridContainer" parent="MarginContainer/VBoxContainer" unique_id=1120073015]
 unique_name_in_owner = true
@@ -97,30 +92,35 @@ icon_texture = ExtResource("3_giv8v")
 
 [node name="speed" parent="MarginContainer/VBoxContainer/SlotGrid" unique_id=738847565 instance=ExtResource("2_eg2gl")]
 layout_mode = 2
+stat_id = &"speed"
 skill_name = "SPEED"
 skill_desc = "Move faster on ground."
 icon_texture = ExtResource("4_se0nm")
 
 [node name="jump_power" parent="MarginContainer/VBoxContainer/SlotGrid" unique_id=1211367155 instance=ExtResource("2_eg2gl")]
 layout_mode = 2
+stat_id = &"jump_power"
 skill_name = "JUMP POWER"
 skill_desc = "Jump higher up the tower."
 icon_texture = ExtResource("5_g4jv7")
 
-[node name="shield" parent="MarginContainer/VBoxContainer/SlotGrid" unique_id=2003370472 instance=ExtResource("2_eg2gl")]
+[node name="stronger_shield" parent="MarginContainer/VBoxContainer/SlotGrid" unique_id=2003370472 instance=ExtResource("2_eg2gl")]
 layout_mode = 2
+stat_id = &"dash_bounce_mult"
 skill_name = "MIGHTIER SHIELD"
-skill_desc = "Block more hits before break."
+skill_desc = "Bash with more velocity"
 icon_texture = ExtResource("7_ygxdb")
 
-[node name="power_shield" parent="MarginContainer/VBoxContainer/SlotGrid" unique_id=1080814903 instance=ExtResource("2_eg2gl")]
+[node name="fast_shield" parent="MarginContainer/VBoxContainer/SlotGrid" unique_id=1080814903 instance=ExtResource("2_eg2gl")]
 layout_mode = 2
+stat_id = &"dash_speed"
 skill_name = "FASTER BASH"
-skill_desc = "Bounce higher with shield."
+skill_desc = "Dash & Bash faster"
 icon_texture = ExtResource("8_shjbj")
 
-[node name="bash_shield" parent="MarginContainer/VBoxContainer/SlotGrid" unique_id=661333543 instance=ExtResource("2_eg2gl")]
+[node name="skill_shield" parent="MarginContainer/VBoxContainer/SlotGrid" unique_id=661333543 instance=ExtResource("2_eg2gl")]
 layout_mode = 2
+stat_id = &"skill_cooldown"
 skill_name = "DISPEL"
 skill_desc = "Press E to dispel enemies using shield"
 icon_texture = ExtResource("10_g4jv7")
@@ -137,17 +137,9 @@ text = "Hover an icon or button to see details."
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="RetryButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=1523679510]
+[node name="RetryButton" parent="MarginContainer/VBoxContainer" unique_id=1682840967 instance=ExtResource("11_cnp6h")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(140, 0)
+clip_contents = true
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_colors/font_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
-theme_override_colors/font_focus_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
-theme_override_colors/font_pressed_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
-theme_override_colors/font_hover_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_g4jv7")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_g4jv7")
-theme_override_styles/hover = SubResource("StyleBoxFlat_g4jv7")
-theme_override_styles/focus = SubResource("StyleBoxFlat_g4jv7")
-text = "PLAY AGAIN"
+text = "Retry"
