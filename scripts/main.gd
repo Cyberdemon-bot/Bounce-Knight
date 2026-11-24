@@ -44,7 +44,3 @@ func spawn_all_markers() -> void:
 			var enemy := enemy_scene.instantiate()
 			enemy.global_position = marker.global_position
 			add_child(enemy)
-			
-func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_cancel"):
-		_on_menu_pressed()

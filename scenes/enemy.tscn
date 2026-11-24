@@ -113,6 +113,8 @@ show_percentage = false
 
 [node name="HitSound" type="AudioStreamPlayer2D" parent="." unique_id=1012484249]
 stream = ExtResource("4_c4w8v")
+bus = &"SFX"
 
 [node name="ShootSound" type="AudioStreamPlayer2D" parent="." unique_id=872718782]
 stream = ExtResource("5_xwavj")
+bus = &"SFX"

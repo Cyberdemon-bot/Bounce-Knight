@@ -223,15 +223,19 @@ texture_progress = ExtResource("5_d2wvv")
 
 [node name="JumpSound" type="AudioStreamPlayer2D" parent="." unique_id=1542134549]
 stream = ExtResource("4_fjrip")
+bus = &"SFX"
 
 [node name="LandSound" type="AudioStreamPlayer2D" parent="." unique_id=591672109]
 stream = ExtResource("5_smehm")
+bus = &"SFX"
 
 [node name="HitSound" type="AudioStreamPlayer2D" parent="." unique_id=1856392521]
 stream = ExtResource("6_ur7pv")
+bus = &"SFX"
 
 [node name="ParrySound" type="AudioStreamPlayer2D" parent="." unique_id=1977840636]
 stream = ExtResource("7_y4r1p")
+bus = &"SFX"
 
 [node name="BodyPoint" type="Marker2D" parent="." unique_id=1092870533]
 position = Vector2(0, 5)

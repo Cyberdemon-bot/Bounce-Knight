@@ -50,8 +50,11 @@ var skill_cooldown_timer: float = 0.0
 @export var max_hp: int = 5
 var hp: int
 var invuln_timer: float = 0.0 
+var is_dead: bool = false
+var spawn_position: Vector2
 
 func _ready() -> void:
+	spawn_position = global_position
 	max_hp = int(GameManager.stat(&"max_hp"))
 	speed = GameManager.stat(&"speed")
 	jump_velocity = GameManager.stat(&"jump_power")
@@ -73,17 +76,13 @@ func _ready() -> void:
 func update_skill_ui() -> void:
 	if dash_cooldown_timer > 0.0:
 		dash_bar.value = dash_cooldown - dash_cooldown_timer
-		#dash_bar.modulate = Color(0.6, 0.6, 0.6) 
 	else:
 		dash_bar.value = dash_cooldown
-		#dash_bar.modulate = Color.WHITE 
 
 	if skill_cooldown_timer > 0.0:
 		push_bar.value = skill_cooldown - skill_cooldown_timer
-		#push_bar.modulate = Color(0.6, 0.6, 0.6)
 	else:
 		push_bar.value = skill_cooldown
-		#push_bar.modulate = Color.WHITE
 
 func _on_shield_area_entered(area: Area2D) -> void:
 	if area.is_in_group("enemy_bullets"):
@@ -94,7 +93,7 @@ func _on_shield_area_entered(area: Area2D) -> void:
 			area.reflect(reflect_dir)
 
 func take_damage(amount: int, hit_from: Vector2 = Vector2.ZERO) -> void:
-	if invuln_timer > 0.0:
+	if invuln_timer > 0.0 or is_dead:
 		return
 	hit_sound.play()
 	hp = max(hp - amount, 0)
@@ -109,9 +108,18 @@ func take_damage(amount: int, hit_from: Vector2 = Vector2.ZERO) -> void:
 		velocity = (knockback_dir + Vector2(0, -0.3)).normalized() * 250.0
 		is_bouncing = true
 		
-	if hp <= 0:
-		get_tree().call_deferred("change_scene_to_file", "res://scenes/ui/upgrade_screen.tscn")
+	if hp <= 0 and not is_dead:
+		is_dead = true
+		get_tree().change_scene_to_file.call_deferred("res://scenes/ui/upgrade_screen.tscn")
 
+func _on_fall_out_of_bounds() -> void:
+	if is_dead:
+		return
+	velocity = Vector2.ZERO
+	is_bouncing = false
+	is_jumping = false
+	global_position = spawn_position
+	take_damage(1)
 
 func update_animation() -> void:
 	if not is_on_floor():
@@ -123,7 +131,6 @@ func update_animation() -> void:
 	else:
 		if anim_player.current_animation != "idle":
 			anim_player.play("idle")
-
 
 func _process(_delta: float) -> void:
 	var mouse_pos := get_global_mouse_position()
@@ -145,7 +152,6 @@ func apply_corner_correction(delta: float) -> void:
 				global_position.x += offset.x
 				return
 
-
 func update_movement(delta: float) -> void:
 	var move_direction := Input.get_axis("move_left", "move_right")
 	
@@ -158,7 +164,7 @@ func update_movement(delta: float) -> void:
 		if is_bouncing:
 			velocity.x = move_toward(velocity.x, 0.0, AIR_ACCEL * delta)
 		elif move_direction:
-			var is_turning := move_direction*velocity.x < 0.0
+			var is_turning := move_direction * velocity.x < 0.0
 			var accel := GROUND_FRICTION if is_turning else GROUND_ACCEL
 			velocity.x = move_toward(velocity.x, move_direction * speed, accel * delta)
 		else:

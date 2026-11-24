@@ -13,6 +13,38 @@ default_font = ExtResource("1_nb5g4")
 base_font = ExtResource("1_h0ljh")
 spacing_glyph = 3
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nb5g4"]
+bg_color = Color(0.8745098, 0.8784314, 0.9098039, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 4
+border_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6jygb"]
+bg_color = Color(0.8745098, 0.8784314, 0.9098039, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 4
+border_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yql1c"]
+bg_color = Color(0.8745098, 0.8784314, 0.9098039, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 4
+border_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yigvc"]
+bg_color = Color(0.8745098, 0.8784314, 0.9098039, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 4
+border_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
+
 [node name="StartScreenClassic" type="Control" unique_id=991237522]
 layout_mode = 3
 anchors_preset = 15
@@ -45,6 +77,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_left = 36
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
 metadata/_edit_use_anchors_ = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1047534423]
@@ -79,3 +113,19 @@ text = "Play"
 unique_name_in_owner = true
 layout_mode = 2
 text = "Quit"
+
+[node name="SettingsButton" type="Button" parent="MarginContainer" unique_id=1615874563]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(44, 24)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+theme_override_colors/font_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
+theme_override_colors/font_focus_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
+theme_override_colors/font_pressed_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
+theme_override_colors/font_hover_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_nb5g4")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_6jygb")
+theme_override_styles/hover = SubResource("StyleBoxFlat_yql1c")
+theme_override_styles/focus = SubResource("StyleBoxFlat_yigvc")
+text = "SET"

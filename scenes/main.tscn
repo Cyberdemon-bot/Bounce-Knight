@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://cr0tf8ukxjkhq" path="res://scripts/main.gd" id="1_h2yge"]
 [ext_resource type="PackedScene" uid="uid://df157sx2skf58" path="res://scenes/player.tscn" id="2_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://b5yr6tmle3hob" path="res://scenes/enemy.tscn" id="2_1bvp3"]
+[ext_resource type="Script" uid="uid://bqqiwlvkbtq02" path="res://scripts/kill_zone.gd" id="5_tbgi4"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1bvp3"]
 texture = ExtResource("1_0xm2m")
@@ -55,6 +56,9 @@ physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_1bvp3")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ghfay"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tbgi4"]
+size = Vector2(6000, 200)
 
 [node name="Scene" type="Node2D" unique_id=1947273785]
 texture_filter = 1
@@ -134,5 +138,15 @@ text = "Main Menu"
 color = Color(0.89411765, 0.92156863, 0.9411765, 1)
 
 [node name="Lighting" type="Node2D" parent="." unique_id=533964371]
+
+[node name="KillZone" type="Area2D" parent="." unique_id=1842864985]
+position = Vector2(0, 726)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("5_tbgi4")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="KillZone" unique_id=1642763673]
+position = Vector2(0, -48)
+shape = SubResource("RectangleShape2D_tbgi4")
 
 [connection signal="timeout" from="SpawnTimer" to="." method="_on_spawn_timer_timeout"]
