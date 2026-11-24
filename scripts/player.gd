@@ -110,7 +110,7 @@ func take_damage(amount: int, hit_from: Vector2 = Vector2.ZERO) -> void:
 		is_bouncing = true
 		
 	if hp <= 0:
-		get_tree().change_scene_to_file("res://scenes/ui/upgrade_screen.tscn")
+		get_tree().call_deferred("change_scene_to_file", "res://scenes/ui/upgrade_screen.tscn")
 
 
 func update_animation() -> void:
