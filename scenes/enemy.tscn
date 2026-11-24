@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://4o87m8njoxi7" path="res://scenes/rune.tscn" id="3_xwavj"]
 [ext_resource type="AudioStream" uid="uid://dcspnjsvvq8wt" path="res://assets/sfx/sfx_hit_spikes.wav" id="4_c4w8v"]
 [ext_resource type="AudioStream" uid="uid://b6tiw73qpw6fi" path="res://assets/sfx/sfx_shoot.wav" id="5_xwavj"]
+[ext_resource type="Texture2D" uid="uid://n2xin1usf0ao" path="res://assets/lights/light.png" id="7_nenq2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ghfay"]
 size = Vector2(11, 16)
@@ -118,3 +119,10 @@ bus = &"SFX"
 [node name="ShootSound" type="AudioStreamPlayer2D" parent="." unique_id=872718782]
 stream = ExtResource("5_xwavj")
 bus = &"SFX"
+
+[node name="PointLight2D" type="PointLight2D" parent="." unique_id=1072581825]
+position = Vector2(0, -2)
+color = Color(0.59607846, 1, 0.39215687, 1)
+energy = 0.2
+texture = ExtResource("7_nenq2")
+texture_scale = 0.15
