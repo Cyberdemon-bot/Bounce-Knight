@@ -4,10 +4,12 @@
 [ext_resource type="Texture2D" uid="uid://du0xata7282sp" path="res://icon.svg" id="2_6jfm5"]
 [ext_resource type="Script" uid="uid://c4qwilqw8sitt" path="res://scripts/ui/icon_box.gd" id="2_6xnit"]
 [ext_resource type="PackedScene" uid="uid://dd60symdwmmc5" path="res://scenes/ui/ui_button.tscn" id="3_6xnit"]
+[ext_resource type="AudioStream" uid="uid://cj6jhq4o2u050" path="res://assets/sfx/ui/ui_upgrade.wav" id="5_a0fg0"]
 
 [node name="UpgradeSlot" type="VBoxContainer" unique_id=1651978702]
 offset_right = 96.0
 offset_bottom = 73.0
+theme_override_constants/separation = 9
 script = ExtResource("1_2o6p1")
 
 [node name="IconBox" type="TextureRect" parent="." unique_id=1912944226]
@@ -23,3 +25,4 @@ script = ExtResource("2_6xnit")
 [node name="LevelUpButton" parent="." unique_id=1991690539 instance=ExtResource("3_6xnit")]
 custom_minimum_size = Vector2(128.175, 22)
 layout_mode = 2
+click_sfx = ExtResource("5_a0fg0")

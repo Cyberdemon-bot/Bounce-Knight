@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://dd60symdwmmc5"]
 
-[ext_resource type="Script" uid="uid://bdedvwd6w28l7" path="res://scripts/ui/level_up_button.gd" id="1_5y1ro"]
+[ext_resource type="Script" uid="uid://bdedvwd6w28l7" path="res://scripts/ui/ui_button.gd" id="1_5y1ro"]
+[ext_resource type="AudioStream" uid="uid://dy1m1xjl1avkp" path="res://assets/sfx/ui/ui_click.wav" id="2_yq7ok"]
+[ext_resource type="AudioStream" uid="uid://cyanmee1os3x4" path="res://assets/sfx/ui/ui_rollover.wav" id="3_llgug"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ct315"]
 bg_color = Color(0.8745098, 0.8784314, 0.9098039, 1)
@@ -8,56 +10,70 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 4
-border_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
+border_color = Color(0.16862746, 0.16862746, 0.27058825, 1)
+expand_margin_left = 8.0
+expand_margin_top = 4.0
+expand_margin_right = 8.0
+expand_margin_bottom = 4.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yq7ok"]
-bg_color = Color(0.837, 0.85095, 0.93, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5y1ro"]
+bg_color = Color(0.53339595, 0.54269105, 0.6268347, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 4
 border_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
+expand_margin_left = 8.0
+expand_margin_top = 4.0
+expand_margin_right = 8.0
+expand_margin_bottom = 4.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_llgug"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yq7ok"]
 bg_color = Color(0.8745098, 0.8784314, 0.9098039, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 4
 border_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
+expand_margin_left = 8.0
+expand_margin_top = 4.0
+expand_margin_right = 8.0
+expand_margin_bottom = 4.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_metdv"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(1, 1, 1, 0.75)
+content_margin_left = 2.0
+content_margin_top = 2.0
+content_margin_right = 2.0
+content_margin_bottom = 2.0
+bg_color = Color(1, 1, 1, 1)
 draw_center = false
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
+border_color = Color(1, 1, 1, 1)
 corner_detail = 5
-expand_margin_left = 2.0
-expand_margin_top = 2.0
-expand_margin_right = 2.0
-expand_margin_bottom = 2.0
+expand_margin_left = 10.0
+expand_margin_top = 6.0
+expand_margin_right = 10.0
+expand_margin_bottom = 6.0
 
 [node name="Button" type="Button" unique_id=1682840967]
 texture_filter = 1
 custom_minimum_size = Vector2(96, 22)
+offset_right = 122.0
+offset_bottom = 29.0
 offset_transform_position = Vector2(-0.295, 0)
 theme_override_colors/font_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
 theme_override_colors/font_focus_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
 theme_override_colors/font_pressed_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
 theme_override_colors/font_hover_color = Color(0.21176471, 0.22352941, 0.3372549, 1)
 theme_override_styles/normal = SubResource("StyleBoxFlat_ct315")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_yq7ok")
-theme_override_styles/hover = SubResource("StyleBoxFlat_llgug")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_5y1ro")
+theme_override_styles/hover = SubResource("StyleBoxFlat_yq7ok")
 theme_override_styles/focus = SubResource("StyleBoxFlat_metdv")
-text = "Text"
+text = "Text
+"
 script = ExtResource("1_5y1ro")
+hover_sfx = ExtResource("3_llgug")
+click_sfx = ExtResource("2_yq7ok")

@@ -6,7 +6,7 @@ signal stats_upgraded
 const UPGRADES := {
 	&"max_hp": { "base": 5.0, "step": 1.0, "max": 5, "cost": 20, "cost_step": 15 },
 	&"speed": { "base": 100.0, "step": 15.0, "max": 5, "cost": 20, "cost_step": 15 },
-	&"jump_power": { "base": -270.0, "step": -10.0, "max": 5, "cost": 20, "cost_step": 15 },
+	&"jump_power": { "base": -270.0, "step": -20.0, "max": 3, "cost": 20, "cost_step": 15 },
 	&"dash_speed": { "base": 350.0, "step": 35.0, "max": 5, "cost": 25, "cost_step": 20 },
 	&"dash_bounce_mult": { "base": 1.3, "step": 0.12,  "max": 5, "cost": 25, "cost_step": 20 },
 	&"skill_cooldown": { "base": 20.0, "step": -2, "max": 5, "cost": 30, "cost_step": 25},

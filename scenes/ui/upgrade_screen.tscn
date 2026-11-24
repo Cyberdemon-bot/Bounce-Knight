@@ -139,7 +139,7 @@ vertical_alignment = 1
 
 [node name="RetryButton" parent="MarginContainer/VBoxContainer" unique_id=1682840967 instance=ExtResource("11_cnp6h")]
 unique_name_in_owner = true
-clip_contents = true
+custom_minimum_size = Vector2(79.885, 22)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Retry"

@@ -63,6 +63,7 @@ func _ready() -> void:
 	dash_bounce_mult = GameManager.stat(&"dash_bounce_mult")
 	bounce_ref_speed = maxf(dash_speed * dash_bounce_mult, 1.0)
 	skill_cooldown = GameManager.stat(&"skill_cooldown")
+	skill_force = dash_speed * 0.75
 	
 	hp = max_hp
 	health_bar.max_value = max_hp

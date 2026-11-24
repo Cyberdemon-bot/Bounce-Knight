@@ -9,18 +9,16 @@ extends CanvasLayer
 @onready var main_menu_btn: Button = %MainMenuButton
 @onready var close_btn: Button = %CloseButton
 
-const TEXT_DARK_COLOR := Color("#363956")
+const TEXT_DARK_COLOR := Color("#2c354d")
 var is_in_gameplay: bool = false
 
 func _ready() -> void:
 	overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	overlay.hide()
 	
-	_style_pixel_slider(bgm_slider)
 	_init_slider(bgm_slider, "BGM")
 	bgm_slider.value_changed.connect(func(val): _set_bus_volume("BGM", val))
 	
-	_style_pixel_slider(sfx_slider)
 	_init_slider(sfx_slider, "SFX")
 	sfx_slider.value_changed.connect(func(val): _set_bus_volume("SFX", val))
 	
@@ -54,7 +52,7 @@ func _input(event: InputEvent) -> void:
 func open_menu(from_gameplay: bool) -> void:
 	is_in_gameplay = from_gameplay
 	main_menu_btn.visible = from_gameplay
-	close_btn.text = "RESUME" if from_gameplay else "CLOSE"
+	close_btn.text = "Resume" if from_gameplay else "Close"
 	
 	for btn in [fullscreen_btn, main_menu_btn, close_btn]:
 		btn.scale = Vector2.ONE
@@ -101,36 +99,6 @@ func _set_bus_volume(bus_name: String, value: float) -> void:
 	AudioServer.set_bus_volume_db(bus_idx, linear_to_db(value))
 	AudioServer.set_bus_mute(bus_idx, value <= 0.01)
 
-func _style_pixel_slider(slider: HSlider) -> void:
-	slider.focus_mode = Control.FOCUS_NONE
-	
-	# 1. Thanh nền hình chữ nhật vuông góc (tắt hoàn toàn bo tròn)
-	var track := StyleBoxFlat.new()
-	track.bg_color = Color("#b8c2dc")
-	track.border_color = TEXT_DARK_COLOR
-	track.set_border_width_all(2)
-	track.set_corner_radius_all(0)
-	track.content_margin_top = 4.0
-	track.content_margin_bottom = 4.0
-	
-	# 2. Phần thanh mức âm lượng đã kéo (bên trái cục vuông)
-	var fill := StyleBoxFlat.new()
-	fill.bg_color = Color("#637096")
-	fill.border_color = TEXT_DARK_COLOR
-	fill.border_width_left = 2
-	fill.border_width_top = 2
-	fill.border_width_bottom = 2
-	fill.set_corner_radius_all(0)
-	fill.content_margin_top = 4.0
-	fill.content_margin_bottom = 4.0
-	
-	slider.add_theme_stylebox_override("slider", track)
-	slider.add_theme_stylebox_override("grabber_area", fill)
-	slider.add_theme_stylebox_override("grabber_area_highlight", fill)
-	
-	# 3. Cục nắm hình vuông pixel (sáng lên khi rê chuột vào)
-	slider.add_theme_icon_override("grabber", _create_square_grabber(Color("#e1e7f5")))
-	slider.add_theme_icon_override("grabber_highlight", _create_square_grabber(Color.WHITE))
 
 func _create_square_grabber(fill_color: Color) -> ImageTexture:
 	var w := 12
@@ -148,22 +116,3 @@ func _setup_button(btn: Button) -> void:
 	btn.add_theme_color_override("font_hover_color", TEXT_DARK_COLOR)
 	btn.add_theme_color_override("font_pressed_color", TEXT_DARK_COLOR)
 	btn.add_theme_color_override("font_focus_color", TEXT_DARK_COLOR)
-	
-	btn.mouse_entered.connect(func():
-		_animate_button_scale(btn, Vector2(1.12, 1.12))
-	)
-	btn.mouse_exited.connect(func():
-		_animate_button_scale(btn, Vector2.ONE)
-	)
-
-func _animate_button_scale(btn: Button, target_scale: Vector2) -> void:
-	if btn.has_meta("hover_tween"):
-		var old_tween: Tween = btn.get_meta("hover_tween")
-		if old_tween and old_tween.is_valid():
-			old_tween.kill()
-			
-	btn.pivot_offset = btn.size / 2.0
-	var tween := create_tween()
-	tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
-	tween.tween_property(btn, "scale", target_scale, 0.1).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	btn.set_meta("hover_tween", tween)
