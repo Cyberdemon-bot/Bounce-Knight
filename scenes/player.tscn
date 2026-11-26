@@ -14,6 +14,7 @@
 [ext_resource type="AudioStream" uid="uid://drw8enxm7c8g" path="res://assets/sfx/sfx_shield_block.wav" id="7_y4r1p"]
 [ext_resource type="Texture2D" uid="uid://n2xin1usf0ao" path="res://assets/lights/light.png" id="8_smehm"]
 [ext_resource type="Texture2D" uid="uid://d10xuuut4rrww" path="res://assets/ui/trajectory_line.png" id="14_f1ej7"]
+[ext_resource type="Texture2D" uid="uid://ch4ay8tr4fylq" path="res://assets/ui/impact_marker.png" id="14_oprun"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ghfay"]
 size = Vector2(12, 23)
@@ -277,3 +278,8 @@ texture_mode = 2
 gradient = SubResource("Gradient_oprun")
 texture = ExtResource("14_f1ej7")
 texture_mode = 2
+
+[node name="ImpactMarker" type="Sprite2D" parent="." unique_id=524386448]
+self_modulate = Color(0.47058824, 1, 1, 1)
+position = Vector2(0, 16)
+texture = ExtResource("14_oprun")

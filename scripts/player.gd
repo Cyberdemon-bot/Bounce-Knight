@@ -40,6 +40,7 @@ var skill_force = dash_speed * 0.75
 @onready var dash_cast: ShapeCast2D = $DashCast
 @onready var trajectory_line: Line2D = $TrajectoryLine
 @onready var bounce_line: Line2D = $BounceTrajectoryLine
+@onready var impact_marker: Sprite2D = $ImpactMarker
 
 var was_on_floor: bool = false
 var coyote_timer: float = 0.0
@@ -82,6 +83,8 @@ func _ready() -> void:
 	trajectory_line.visible = false
 	bounce_line.top_level = true
 	bounce_line.visible = false
+	impact_marker.top_level = true
+	impact_marker.visible = false
 	dash_cast.shape = $CollisionShape2D.shape
 	dash_cast.position = $CollisionShape2D.position
 	_dash_fade_gradient = trajectory_line.gradient
@@ -168,6 +171,7 @@ func update_dash_trajectory(mouse_pos: Vector2) -> void:
 	if dash_dir == Vector2.ZERO:
 		trajectory_line.visible = false
 		bounce_line.visible = false
+		impact_marker.visible = false
 		return
 
 	trajectory_line.visible = true
@@ -201,7 +205,10 @@ func update_dash_trajectory(mouse_pos: Vector2) -> void:
 		if bounce_vel != Vector2.ZERO:
 			trajectory_line.gradient = null
 			bounce_line.visible = true
+
 			bounce_line.add_point(hit_pos)
+			impact_marker.visible = true
+			impact_marker.global_position = hit_pos
 			var push_out := hit_normal if hit_normal != Vector2.ZERO else -dash_dir
 			var sim_pos := hit_pos + push_out * 1.0
 			var dt := 0.03
@@ -223,8 +230,10 @@ func update_dash_trajectory(mouse_pos: Vector2) -> void:
 				bounce_line.add_point(sim_pos)
 		else:
 			trajectory_line.gradient = _dash_fade_gradient
+			
 	else:
 		trajectory_line.gradient = _dash_fade_gradient
+		impact_marker.visible = false
 		trajectory_line.add_point(global_position + dash_dir * max_dash_dist)
 
 	dash_cast.position = shape_offset
@@ -242,6 +251,7 @@ func _process(_delta: float) -> void:
 	else:
 		trajectory_line.visible = false
 		bounce_line.visible = false
+		impact_marker.visible = false
 
 
 	
