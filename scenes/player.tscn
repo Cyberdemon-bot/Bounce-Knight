@@ -13,6 +13,7 @@
 [ext_resource type="AudioStream" uid="uid://dcspnjsvvq8wt" path="res://assets/sfx/sfx_hit_spikes.wav" id="6_ur7pv"]
 [ext_resource type="AudioStream" uid="uid://drw8enxm7c8g" path="res://assets/sfx/sfx_shield_block.wav" id="7_y4r1p"]
 [ext_resource type="Texture2D" uid="uid://n2xin1usf0ao" path="res://assets/lights/light.png" id="8_smehm"]
+[ext_resource type="Texture2D" uid="uid://d10xuuut4rrww" path="res://assets/ui/trajectory_line.png" id="14_f1ej7"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ghfay"]
 size = Vector2(12, 23)
@@ -122,6 +123,16 @@ _data = {
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g5nlp"]
 size = Vector2(12, 23)
+
+[sub_resource type="Gradient" id="Gradient_f1ej7"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0.7839506, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="Gradient" id="Gradient_oprun"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0.7839506, 1)
+colors = PackedColorArray(0, 1, 1, 1, 0, 1, 1, 0)
 
 [node name="Player" type="CharacterBody2D" unique_id=1816567509]
 collision_layer = 2
@@ -258,4 +269,11 @@ target_position = Vector2(0, 4.5)
 collision_mask = 5
 
 [node name="TrajectoryLine" type="Line2D" parent="." unique_id=1035102283]
-width = 5.0
+gradient = SubResource("Gradient_f1ej7")
+texture = ExtResource("14_f1ej7")
+texture_mode = 2
+
+[node name="BounceTrajectoryLine" type="Line2D" parent="." unique_id=1602837931]
+gradient = SubResource("Gradient_oprun")
+texture = ExtResource("14_f1ej7")
+texture_mode = 2

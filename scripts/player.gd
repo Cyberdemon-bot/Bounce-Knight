@@ -39,7 +39,7 @@ var skill_force = dash_speed * 0.75
 @onready var parry_sound: AudioStreamPlayer2D = $ParrySound
 @onready var dash_cast: ShapeCast2D = $DashCast
 @onready var trajectory_line: Line2D = $TrajectoryLine
-
+@onready var bounce_line: Line2D = $BounceTrajectoryLine
 
 var was_on_floor: bool = false
 var coyote_timer: float = 0.0
@@ -56,7 +56,7 @@ var hp: int
 var invuln_timer: float = 0.0 
 var is_dead: bool = false
 var spawn_position: Vector2
-
+var _dash_fade_gradient: Gradient
 func _ready() -> void:
 	spawn_position = global_position
 	max_hp = int(GameManager.stat(&"max_hp"))
@@ -80,9 +80,11 @@ func _ready() -> void:
 	shield_area.area_entered.connect(_on_shield_area_entered)
 	trajectory_line.top_level = true
 	trajectory_line.visible = false
+	bounce_line.top_level = true
+	bounce_line.visible = false
 	dash_cast.shape = $CollisionShape2D.shape
 	dash_cast.position = $CollisionShape2D.position
-	
+	_dash_fade_gradient = trajectory_line.gradient
 func update_skill_ui() -> void:
 	if dash_cooldown_timer > 0.0:
 		dash_bar.value = dash_cooldown - dash_cooldown_timer
@@ -165,11 +167,15 @@ func update_dash_trajectory(mouse_pos: Vector2) -> void:
 	var dash_dir := global_position.direction_to(mouse_pos)
 	if dash_dir == Vector2.ZERO:
 		trajectory_line.visible = false
+		bounce_line.visible = false
 		return
 
 	trajectory_line.visible = true
 	trajectory_line.clear_points()
 	trajectory_line.add_point(global_position)
+
+	bounce_line.visible = true
+	bounce_line.clear_points()
 
 	var shape_offset: Vector2 = $CollisionShape2D.position
 	var max_dash_dist := dash_speed * DASH_DURATION
@@ -193,6 +199,9 @@ func update_dash_trajectory(mouse_pos: Vector2) -> void:
 		)
 
 		if bounce_vel != Vector2.ZERO:
+			trajectory_line.gradient = null
+			bounce_line.visible = true
+			bounce_line.add_point(hit_pos)
 			var push_out := hit_normal if hit_normal != Vector2.ZERO else -dash_dir
 			var sim_pos := hit_pos + push_out * 1.0
 			var dt := 0.03
@@ -207,12 +216,15 @@ func update_dash_trajectory(mouse_pos: Vector2) -> void:
 
 				if dash_cast.is_colliding():
 					var step_frac := dash_cast.get_closest_collision_safe_fraction()
-					trajectory_line.add_point(sim_pos + step_vec * step_frac)
+					bounce_line.add_point(sim_pos + step_vec * step_frac)
 					break
 
 				sim_pos += step_vec
-				trajectory_line.add_point(sim_pos)
+				bounce_line.add_point(sim_pos)
+		else:
+			trajectory_line.gradient = _dash_fade_gradient
 	else:
+		trajectory_line.gradient = _dash_fade_gradient
 		trajectory_line.add_point(global_position + dash_dir * max_dash_dist)
 
 	dash_cast.position = shape_offset
@@ -229,6 +241,7 @@ func _process(_delta: float) -> void:
 		update_dash_trajectory(mouse_pos)
 	else:
 		trajectory_line.visible = false
+		bounce_line.visible = false
 
 
 	
