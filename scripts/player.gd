@@ -37,12 +37,16 @@ var skill_force = dash_speed * 0.75
 @onready var land_sound: AudioStreamPlayer2D = $LandSound
 @onready var hit_sound: AudioStreamPlayer2D = $HitSound
 @onready var parry_sound: AudioStreamPlayer2D = $ParrySound
+@onready var dash_cast: ShapeCast2D = $DashCast
+@onready var trajectory_line: Line2D = $TrajectoryLine
+
 
 var was_on_floor: bool = false
 var coyote_timer: float = 0.0
 var jump_buffer_timer: float = 0.0
 var is_jumping: bool = false
 var is_bouncing: bool = false
+var is_charging_dash: bool = false
 var dash_timer: float = 0.0
 var dash_cooldown_timer: float = 0.0
 var skill_cooldown_timer: float = 0.0
@@ -59,6 +63,7 @@ func _ready() -> void:
 	speed = GameManager.stat(&"speed")
 	jump_velocity = GameManager.stat(&"jump_power")
 	dash_speed = GameManager.stat(&"dash_speed")
+	skill_force = dash_speed * 0.75
 	dash_cooldown = 1.0
 	dash_bounce_mult = GameManager.stat(&"dash_bounce_mult")
 	bounce_ref_speed = maxf(dash_speed * dash_bounce_mult, 1.0)
@@ -73,6 +78,10 @@ func _ready() -> void:
 	push_bar.max_value = skill_cooldown
 	push_bar.value = skill_cooldown
 	shield_area.area_entered.connect(_on_shield_area_entered)
+	trajectory_line.top_level = true
+	trajectory_line.visible = false
+	dash_cast.shape = $CollisionShape2D.shape
+	dash_cast.position = $CollisionShape2D.position
 	
 func update_skill_ui() -> void:
 	if dash_cooldown_timer > 0.0:
@@ -100,6 +109,7 @@ func take_damage(amount: int, hit_from: Vector2 = Vector2.ZERO) -> void:
 	hp = max(hp - amount, 0)
 	health_bar.value = hp
 	invuln_timer = 0.8 
+	is_charging_dash = false
 	
 	$Sprite2D.modulate = Color(1.0, 0.3, 0.3) 
 	get_tree().create_timer(0.15).timeout.connect(func(): if is_instance_valid(self): $Sprite2D.modulate = Color.WHITE)
@@ -116,6 +126,7 @@ func take_damage(amount: int, hit_from: Vector2 = Vector2.ZERO) -> void:
 func _on_fall_out_of_bounds() -> void:
 	if is_dead:
 		return
+	is_charging_dash = false
 	velocity = Vector2.ZERO
 	is_bouncing = false
 	is_jumping = false
@@ -132,11 +143,94 @@ func update_animation() -> void:
 	else:
 		if anim_player.current_animation != "idle":
 			anim_player.play("idle")
+			
+func calculate_dash_bounce(incoming_vel: Vector2, collider: Object, hit_pos: Vector2, surface_normal: Vector2) -> Vector2:
+	var normal := surface_normal
+	if collider and collider.has_method("on_hit_by_dash"):
+		normal = collider.global_position.direction_to(hit_pos)
+	if normal == Vector2.ZERO:
+		normal = -incoming_vel.normalized()
+	
+	if incoming_vel.dot(normal) < -10.0:
+		return incoming_vel.bounce(normal) * dash_bounce_mult
+	return Vector2.ZERO
+
+
+func apply_gravity_step(current_vel: Vector2, delta: float) -> Vector2:
+	var gravity_mult := FALL_GRAVITY_MULT if current_vel.y > 0.0 else 1.0
+	return current_vel + get_gravity() * delta * gravity_mult
+
+			
+func update_dash_trajectory(mouse_pos: Vector2) -> void:
+	var dash_dir := global_position.direction_to(mouse_pos)
+	if dash_dir == Vector2.ZERO:
+		trajectory_line.visible = false
+		return
+
+	trajectory_line.visible = true
+	trajectory_line.clear_points()
+	trajectory_line.add_point(global_position)
+
+	var shape_offset: Vector2 = $CollisionShape2D.position
+	var max_dash_dist := dash_speed * DASH_DURATION
+	var grace_dist := dash_speed * (DASH_DURATION + DASH_BOUNCE_GRACE)
+
+	dash_cast.position = shape_offset
+	dash_cast.target_position = dash_dir * grace_dist
+	dash_cast.force_shapecast_update()
+
+	if dash_cast.is_colliding():
+		var safe_fraction := dash_cast.get_closest_collision_safe_fraction()
+		var hit_pos := global_position + dash_cast.target_position * safe_fraction
+		trajectory_line.add_point(hit_pos)
+
+		var hit_normal := dash_cast.get_collision_normal(0)
+		var bounce_vel := calculate_dash_bounce(
+			dash_dir * dash_speed,
+			dash_cast.get_collider(0),
+			hit_pos,
+			hit_normal
+		)
+
+		if bounce_vel != Vector2.ZERO:
+			var push_out := hit_normal if hit_normal != Vector2.ZERO else -dash_dir
+			var sim_pos := hit_pos + push_out * 1.0
+			var dt := 0.03
+
+			for i in range(18):
+				bounce_vel = apply_gravity_step(bounce_vel, dt)
+				var step_vec := bounce_vel * dt
+
+				dash_cast.global_position = sim_pos + shape_offset
+				dash_cast.target_position = step_vec
+				dash_cast.force_shapecast_update()
+
+				if dash_cast.is_colliding():
+					var step_frac := dash_cast.get_closest_collision_safe_fraction()
+					trajectory_line.add_point(sim_pos + step_vec * step_frac)
+					break
+
+				sim_pos += step_vec
+				trajectory_line.add_point(sim_pos)
+	else:
+		trajectory_line.add_point(global_position + dash_dir * max_dash_dist)
+
+	dash_cast.position = shape_offset
+
+
 
 func _process(_delta: float) -> void:
 	var mouse_pos := get_global_mouse_position()
 	$ShieldPivot.look_at(mouse_pos)
 	$ShieldPivot/Sprite2D.flip_v = mouse_pos.x < global_position.x
+	
+	if is_charging_dash:
+		$Sprite2D.flip_h = mouse_pos.x < global_position.x
+		update_dash_trajectory(mouse_pos)
+	else:
+		trajectory_line.visible = false
+
+
 	
 func apply_corner_correction(delta: float) -> void:
 	if velocity.y >= 0.0:
@@ -156,10 +250,11 @@ func apply_corner_correction(delta: float) -> void:
 func update_movement(delta: float) -> void:
 	var move_direction := Input.get_axis("move_left", "move_right")
 	
-	if move_direction < 0.0:
-		$Sprite2D.flip_h = true
-	elif move_direction > 0.0:
-		$Sprite2D.flip_h = false
+	if not is_charging_dash:
+		if move_direction < 0.0:
+			$Sprite2D.flip_h = true
+		elif move_direction > 0.0:
+			$Sprite2D.flip_h = false
 		
 	if is_on_floor():
 		if is_bouncing:
@@ -202,11 +297,19 @@ func push_nearby_enemies() -> void:
 			body.on_hit_by_dash(push_dir * skill_force)
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed and not event.echo:
-		if event.keycode == KEY_Q and dash_timer <= 0.0 and dash_cooldown_timer <= 0.0:
-			dash()
-		elif event.keycode == KEY_E and skill_cooldown_timer <= 0.0:
+	if is_dead:
+		return
+
+	if event is InputEventKey and not event.echo:
+		if event.keycode == KEY_Q:
+			if event.pressed and dash_timer <= 0.0 and dash_cooldown_timer <= 0.0:
+				is_charging_dash = true
+			elif not event.pressed and is_charging_dash:
+				is_charging_dash = false
+				dash()
+		elif event.keycode == KEY_E and event.pressed and skill_cooldown_timer <= 0.0:
 			push_nearby_enemies()
+
 
 func _physics_process(delta: float) -> void:
 	if dash_cooldown_timer > 0.0:
@@ -232,8 +335,7 @@ func _physics_process(delta: float) -> void:
 				var hit_dir := global_position.direction_to(body.global_position)
 				body.on_hit_by_dash(hit_dir * dash_speed)
 				
-				var bounce_normal := body.global_position.direction_to(global_position)
-				velocity = prev_velocity.bounce(bounce_normal) * dash_bounce_mult
+				velocity = calculate_dash_bounce(prev_velocity, body, global_position, Vector2.ZERO)
 				dash_timer = 0.0
 				is_bouncing = true
 				dash_cooldown_timer = 0.0
@@ -242,9 +344,9 @@ func _physics_process(delta: float) -> void:
 		var did_bounce := false
 		for i in get_slide_collision_count():
 			var collision := get_slide_collision(i)
-			var normal := collision.get_normal()
-			if prev_velocity.dot(normal) < -10.0:
-				velocity = prev_velocity.bounce(normal) * dash_bounce_mult
+			var bounce_vel := calculate_dash_bounce(prev_velocity, collision.get_collider(), global_position, collision.get_normal())
+			if bounce_vel != Vector2.ZERO:
+				velocity = bounce_vel
 				dash_timer = 0.0
 				is_bouncing = true
 				did_bounce = true
@@ -267,12 +369,10 @@ func _physics_process(delta: float) -> void:
 			if abs(velocity.x) <= speed:
 				is_bouncing = false
 	else:
-		var gravity_mult := 1.0
 		coyote_timer = max(coyote_timer - delta, 0.0)
 		if velocity.y > 0.0:
 			is_jumping = false
-			gravity_mult = FALL_GRAVITY_MULT
-		velocity += get_gravity() * delta * gravity_mult
+		velocity = apply_gravity_step(velocity, delta)
 
 	# Thực hiện nhảy khi có buffer và còn coyote time
 	if jump_buffer_timer > 0.0 and coyote_timer > 0.0:
