@@ -271,16 +271,18 @@ target_position = Vector2(0, 4.5)
 collision_mask = 5
 
 [node name="TrajectoryLine" type="Line2D" parent="." unique_id=1035102283]
+position = Vector2(0, 16)
 gradient = SubResource("Gradient_f1ej7")
 texture = ExtResource("14_f1ej7")
 texture_mode = 2
 
 [node name="BounceTrajectoryLine" type="Line2D" parent="." unique_id=1602837931]
+position = Vector2(0, 16)
 gradient = SubResource("Gradient_oprun")
 texture = ExtResource("14_f1ej7")
 texture_mode = 2
 
 [node name="ImpactMarker" type="Sprite2D" parent="." unique_id=524386448]
 self_modulate = Color(0.47058824, 1, 1, 1)
-position = Vector2(0, 16)
 texture = ExtResource("14_oprun")
+offset = Vector2(0, 16)
