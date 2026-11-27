@@ -17,7 +17,7 @@
 [ext_resource type="Texture2D" uid="uid://ch4ay8tr4fylq" path="res://assets/ui/impact_marker.png" id="14_oprun"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ghfay"]
-size = Vector2(12, 23)
+size = Vector2(8, 18)
 
 [sub_resource type="Curve" id="Curve_fjrip"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -1.8876406, 0.0, 0, 0]
@@ -145,13 +145,14 @@ vframes = 5
 region_rect = Rect2(0, 0, 31.5, 36.25)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=889641082]
-position = Vector2(0, 4.5)
+position = Vector2(0, 7)
 shape = SubResource("RectangleShape2D_ghfay")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1432412782]
 zoom = Vector2(1.25, 1.25)
 
 [node name="Snow" type="GPUParticles2D" parent="Camera2D" unique_id=1103408815]
+visible = false
 z_index = -60
 position = Vector2(6.4623485e-27, -373)
 scale = Vector2(4.2958384, -7.945598)
